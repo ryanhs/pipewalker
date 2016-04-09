@@ -1,7 +1,145 @@
+@import "scss/paper/variables";
 @import "bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
-@import "bower_components/bootstrap-sass/assets/stylesheets/bootstrap/theme";
+@import "scss/paper/bootswatch";
 
+$cell-size-no-px:			64; // optimal 64
+$cell-size:					#{$cell-size-no-px}px;
+$board-theme:				'Simple';
+$board-responsize:			$cell-size-no-px/64;
+$board-size:				512; // fixed size from image width
 
+.board {
+	
+	table {
+		margin:auto;
+		tr{
+			td{
+				min-width:$cell-size;
+				width:$cell-size;
+				height:$cell-size;
+				
+				background-image: url(images/theme/#{$board-theme}.png);
+				background-repeat: no-repeat;
+				background-size: #{$board-size*$board-responsize}px auto;
+				background-position: -#{$cell-size-no-px * 1}px 0px;
+				
+				cursor: pointer;
+					
+				span{
+					width:100%;
+					height:100%;
+					display:block;
+					
+					
+					&.blank,
+					&.source,
+					&.source span,
+					&.client, &.client.active,
+					&.client span, &.client.active span,
+					&.pipe-1, &.pipe-1.active,
+					&.pipe-2, &.pipe-2.active,
+					&.pipe-3, &.pipe-3.active
+					{
+						background-image: url(images/theme/#{$board-theme}.png);
+						background-repeat: no-repeat;
+						background-size: #{$board-size*$board-responsize}px auto;
+					}
+					
+					
+					&.blank{				background-position: 0px						#{$cell-size-no-px * 1}px; }
+					
+					
+					
+					/*
+					 * source
+					 */
+					&.source{				background-position: 0px						-#{$cell-size-no-px * 1}px; }
+					&.source.active{		background-position: -#{$cell-size-no-px * 1}px -#{$cell-size-no-px * 1}px; }
+					&.source span{			background-position: -#{$cell-size-no-px * 2}px 0px; } // power source
+					
+					&.client{				background-position: 0							-#{$cell-size-no-px * 1}px; }
+					&.client.active{		background-position: -#{$cell-size-no-px * 1}px -#{$cell-size-no-px * 1}px; }
+					&.client span{			background-position: -#{$cell-size-no-px * 3}px 0px; }
+					&.client.active span{	background-position: -#{$cell-size-no-px * 4}px 0px; }
+					
+					&.source.left span, &.client.left span{
+						$degree:			90deg;
+						-webkit-transform: 	rotate($degree) !important;
+						-ms-transform: 		rotate($degree) !important;
+						-moz-transform: 	rotate($degree) !important;
+						transform: 			rotate($degree) !important;
+					}
+					&.source.up span, &.client.up span{
+						$degree:			0deg;
+						-webkit-transform: 	rotate($degree) !important;
+						-ms-transform: 		rotate($degree) !important;
+						-moz-transform: 	rotate($degree) !important;
+						transform: 			rotate($degree) !important;
+					}
+					&.source.right span, &.client.right span{
+						$degree:			-90deg;
+						-webkit-transform: 	rotate($degree) !important;
+						-ms-transform: 		rotate($degree) !important;
+						-moz-transform: 	rotate($degree) !important;
+						transform: 			rotate($degree) !important;
+					}
+					&.source.down span, &.client.down span{
+						$degree:			-180deg;
+						-webkit-transform: 	rotate($degree) !important;
+						-ms-transform: 		rotate($degree) !important;
+						-moz-transform: 	rotate($degree) !important;
+						transform: 			rotate($degree) !important;
+					}
+					
+					
+					
+					
+					/*
+					 * other type
+					 */
+					&.pipe-1{ 			background-position: -#{$cell-size-no-px * 2}px -#{$cell-size-no-px * 1}px; }
+					&.pipe-1.active{	background-position: -#{$cell-size-no-px * 3}px -#{$cell-size-no-px * 1}px; }
+					&.pipe-2{ 			background-position: -#{$cell-size-no-px * 4}px -#{$cell-size-no-px * 1}px; }
+					&.pipe-2.active{	background-position: -#{$cell-size-no-px * 5}px -#{$cell-size-no-px * 1}px; }
+					&.pipe-3{ 			background-position: -#{$cell-size-no-px * 6}px -#{$cell-size-no-px * 1}px; }
+					&.pipe-3.active{	background-position: -#{$cell-size-no-px * 7}px -#{$cell-size-no-px * 1}px; }
+					
+					&.left{
+						$degree:			-90deg;
+						-webkit-transform: 	rotate($degree);
+						-ms-transform: 		rotate($degree);
+						-moz-transform: 	rotate($degree);
+						transform: 			rotate($degree);
+					}
+					&.up{
+						$degree:			0deg;
+						-webkit-transform: 	rotate($degree);
+						-ms-transform: 		rotate($degree);
+						-moz-transform: 	rotate($degree);
+						transform: 			rotate($degree);
+					}
+					&.right{
+						$degree:			90deg;
+						-webkit-transform: 	rotate($degree);
+						-ms-transform: 		rotate($degree);
+						-moz-transform: 	rotate($degree);
+						transform: 			rotate($degree);
+					}
+					&.down{
+						$degree:			180deg;
+						-webkit-transform: 	rotate($degree);
+						-ms-transform: 		rotate($degree);
+						-moz-transform: 	rotate($degree);
+						transform: 			rotate($degree);
+					}
+					
+					
+					
+				}
+			}
+		}
+	}
+}
 
 
 

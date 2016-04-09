@@ -9,8 +9,8 @@
 	<link href="favicon.ico" rel="shortcut icon" />
 	<link href="style.css" rel="stylesheet" />
 	<!--[if lt IE 9]>
-	<script src1="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	<script src1="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
 </head>
 <body>
@@ -42,27 +42,32 @@
 		
 		<div class="row">
 			
-			<div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">
-				<div class="panel panel-primary">
-					<div class="panel-heading">Pipewalker</div>
-					<div class="panel-body">
-					</div>
+			<div class="col-lg-12 col-md-12">
+				<div class="board well">					
+					<table></table>
 				</div>
 			</div>
 			
 		</div>
 		
+		
+		<div class="row">
+			<div class="col-lg-12 col-md-12">
+				<hr/>
+			</div>
+		</div>
+			
 		<div class="row footer">
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 				<p>
 					porting of Pipewalker to web interface,<br/>
 					this is my personal project for final term in "Artificial Intelligent" in ITB (master degree).<br/>
-					I made this for implement AI algorithm as my final term.
+					I made this for implement AI algorithm in my final term.
 				</p>
 				
 				<ul>
 					<li>pipwalker author: Artem Senichev &lt;artemsen@gmail.com&gt;</li>
-					<li>ported by : ryan hs &lt;mr.ryansilalahi@gmail.com&gt;</li>
+					<li>ported by : Ryan H Silalahi &lt;mr.ryansilalahi@gmail.com&gt;</li>
 				</ul>
 			</div>
 		</div>
@@ -73,6 +78,15 @@
 
 	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="bower_components/bootstrap-sass/assets/javascripts/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		
+		// global config
+		var boardSize = 4;
+		var board = null;
+		var debug = true;
+		
+	</script>
+	<script type="text/javascript" src="js/Board.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 </body>
 </html>
