@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>8-Puzzle</title>
+	<title>Pipewalker</title>
 
 	<link href="favicon.ico" rel="shortcut icon" />
 	<link href="style.css" rel="stylesheet" />
@@ -42,9 +42,46 @@
 		
 		<div class="row">
 			
-			<div class="col-lg-12 col-md-12">
-				<div class="board well">					
-					<table></table>
+			<div class="col-lg-4 col-md-6">
+				
+				<div class="board well"><table></table></div>
+				
+			</div>
+			
+			
+			<div class="col-lg-4 col-md-6">
+				<div class="panel panel-primary">
+					<div class="panel-heading">Move history</div>
+					<div class="log panel-body">
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">
+				<div class="panel panel-primary">
+					<div class="panel-heading">Control Panel</div>
+					<div class="panel-body">
+						
+						<p>
+							<strong>create new level?</strong>
+							<div class="btn-group">
+								<a href="#" class="btn btn-success" onClick="javascript:init_game(7);return false;">7 x 7</a>
+								<a href="#" class="btn btn-primary" onClick="javascript:init_game(8);return false;">8 x 8</a>
+								<a href="#" class="btn btn-info" onClick="javascript:init_game(9);return false;">9 x 9</a>
+							</div>
+						</p>
+						<hr/>
+						<p>
+							<strong>change theme?</strong>
+							<div class="btn-group">
+								<a href="#" class="btn btn-success" onClick="javascript:change_theme('plumbing');return false;">plumbing</a>
+								<a href="#" class="btn btn-primary" onClick="javascript:change_theme('network');return false;">network</a>
+								<a href="#" class="btn btn-info" onClick="javascript:change_theme('simple');return false;">simple</a>
+							</div>
+						</p>
+						
+
+					</div>
 				</div>
 			</div>
 			
@@ -59,21 +96,40 @@
 			
 		<div class="row footer">
 			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-				<p>
-					porting of Pipewalker to web interface,<br/>
-					this is my personal project for final term in "Artificial Intelligent" in ITB (master degree).<br/>
-					I made this for implement AI algorithm in my final term.
-				</p>
-				
-				<ul>
-					<li>pipwalker author: Artem Senichev &lt;artemsen@gmail.com&gt;</li>
-					<li>ported by : Ryan H Silalahi &lt;mr.ryansilalahi@gmail.com&gt;</li>
-				</ul>
+				<blockquote>
+					<p>
+						porting of Pipewalker to web interface,<br/>
+						this is my personal project for final term in "Artificial Intelligent" in ITB (master degree).<br/>
+						I made this for implement AI algorithm in my final term.
+					</p>
+					
+					<ul>
+						<li>pipwalker author: Artem Senichev &lt;artemsen@gmail.com&gt;</li>
+						<li>ported by : Ryan H Silalahi &lt;mr.ryansilalahi@gmail.com&gt;</li>
+					</ul>
+				</blockquote>
 			</div>
 		</div>
 		
 	</div>
 	
+	<div class="modal alert-win">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Win!!</h4>
+				</div>
+				
+				<div class="modal-body">
+					<center><h2>Congratulation!! </h2></center>
+					<br/>
+					<br/>
+				</div>
+			</div>
+		</div>
+	</div>
 	
 
 	<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -81,12 +137,14 @@
 	<script type="text/javascript">
 		
 		// global config
-		var boardSize = 4;
+		var boardSize = 8;
 		var board = null;
-		var debug = true;
+		var debug = false;
+		var loger = null;
 		
 	</script>
 	<script type="text/javascript" src="js/Board.js"></script>
+	<script type="text/javascript" src="js/Loger.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 </body>
 </html>

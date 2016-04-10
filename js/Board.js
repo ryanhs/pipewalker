@@ -1,10 +1,22 @@
+function mt_rand(max){
+	return Math.floor((Math.random() * 1000) % (max + 1));
+}
+
+function rand_direction(){
+	r = mt_rand(4);
+	return r == 1 ? 'left'
+		: (r == 2 ? 'up'
+		: (r == 2 ? 'right'
+		: 'down'));
+}
 
 function Board() {
 	this.data = [];
+	this.goal = [];
 	this.defaultDataType = [
 		['blank', 'client', 'pipe-2', 'pipe-1'],
 		['pipe-3', 'pipe-2', 'pipe-1', 'pipe-2'],
-		['pipe1', 'source', 'pipe-2', 'pipe-1'],
+		['pipe1', 'source', 'pipe-2', 'pipe-2'],
 		['pipe-1', 'blank', 'pipe-1', 'blank'],
 	];
 	this.defaultDataActive = [
@@ -47,6 +59,224 @@ function Board() {
 		return this;
 	}
 	
+	this.createLevel = function(){		
+		// source placement
+		sourceCoordinate = [mt_rand(boardSize-1), mt_rand(boardSize-1)];
+		sourceCell = this.data[sourceCoordinate[0]][sourceCoordinate[1]];
+		sourceCell.type = 'source';
+		sourceCell.direction = rand_direction();
+		
+		// have fun!
+		maxCell = boardSize * boardSize;
+		filledBranch = [JSON.stringify(sourceCoordinate)];
+		freeBranch = [JSON.stringify(this.getNeighborCoordinate(sourceCoordinate, sourceCell.direction))];
+		while(filledBranch.length < maxCell && freeBranch.length > 0){
+			currentCoordinate = JSON.parse(freeBranch.splice(0, 1)[0]);
+			currentCell = this.data[currentCoordinate[0]][currentCoordinate[1]];
+			
+			// makesure added to fill
+			filledBranch.push(JSON.stringify(currentCoordinate));
+			//console.log(currentCoordinate);
+			
+			if(freeBranch.length == 0){ // only use pipe
+				currentCell.type = 'pipe-1|pipe-2|pipe-3|pipe-3|pipe-3'.split('|')[mt_rand(4)];
+			}
+			else{
+				currentCell.type = 'pipe-1|pipe-2|pipe-3|client|client'.split('|')[mt_rand(4)];
+			}
+			
+			direction = 'up';
+			
+			if(currentCell.type == 'client'){
+				directions = ['up', 'right', 'down', 'left'];
+				for(idx in directions){
+					direction = directions[idx];
+					
+					okBranch = null;
+					branches = this.cellActiveBranches(currentCell.type, direction);
+					for(branch in branches){
+						neighborCoordinate = this.getNeighborCoordinate(currentCoordinate, branches[branch]);					
+						neighborCell = this.data[neighborCoordinate[0]][neighborCoordinate[1]];
+						
+						neighborConnection = this.cellActiveBranches(neighborCell.type, neighborCell.direction);
+						connectionReverse = branches[branch] == 'up' ? 'down'
+									 : (branches[branch] == 'right' ? 'left'
+									 : (branches[branch] == 'down' ? 'up'
+									 : ('right')));
+									 
+						
+						if(neighborConnection.indexOf(connectionReverse) != -1) okBranch = branches[branch];
+					}
+					if(okBranch != null) break;
+				}
+			}else{
+				okBranch = null;
+				while(true){
+					direction = rand_direction();
+					branches = this.cellActiveBranches(currentCell.type, direction);
+					
+					okBranch = null;
+					for(branch in branches){
+						neighborCoordinate = this.getNeighborCoordinate(currentCoordinate, branches[branch]);					
+						neighborCell = this.data[neighborCoordinate[0]][neighborCoordinate[1]];
+						
+						neighborConnection = this.cellActiveBranches(neighborCell.type, neighborCell.direction);
+						connectionReverse = branches[branch] == 'up' ? 'down'
+									 : (branches[branch] == 'right' ? 'left'
+									 : (branches[branch] == 'down' ? 'up'
+									 : ('right')));
+									 
+						
+						if(neighborConnection.indexOf(connectionReverse) != -1) okBranch = branches[branch];
+					}
+					if(okBranch != null) break;
+				}
+				//console.log(okBranch);
+			}
+			
+			currentCell.direction = direction;
+			if(currentCell.type == 'client') continue;
+			
+			branches = this.cellActiveBranches(currentCell.type, currentCell.direction);
+			//console.log(branches);
+			for(branch in branches){
+				neighborCoordinate = this.getNeighborCoordinate(currentCoordinate, branches[branch]);
+				neighborStringify = JSON.stringify(neighborCoordinate);
+				if(!(
+					okBranch[0] == neighborCoordinate[0]
+				&&  okBranch[1] == neighborCoordinate[1]
+				)){
+					if(freeBranch.indexOf(neighborStringify) == -1
+					&& filledBranch.indexOf(neighborStringify) == -1)
+						freeBranch.push(neighborStringify);
+				}
+			}
+		}
+		
+		// check
+		this.reconnectAll();
+		
+		//polish, make it harder
+		for(row = 0; row < boardSize; row++){
+			for(cell = 0; cell < boardSize; cell++){
+				if('pipe-1|pipe-2|pipe-3'.split('|').indexOf(this.data[row][cell].type) != -1){
+					tmpCoordinate = [row, cell];
+					tmpCell = this.data[row][cell];
+					
+					realType = tmpCell.type;
+					realDirection = tmpCell.direction;
+					
+					tmpCell.type = 'blank';
+					tmpCell.direction = 'up';
+					
+					this.reconnectAll();
+					
+					// undo if its wrong :p
+					if(!this.isAllClientOK()){
+						tmpCell.type = realType;
+						tmpCell.direction = realDirection;
+						this.reconnectAll();
+					}else{
+						//console.log('removed [' + row + ',' + cell + '] ' + realType);
+					}
+				}
+			}
+		}
+		
+		// path for pipe-1
+		for(row = 0; row < boardSize; row++){
+			for(cell = 0; cell < boardSize; cell++){
+				tmpCell = this.data[row][cell];
+				if(tmpCell.type == 'pipe-1' && tmpCell.direction == 'down')
+					tmpCell.direction = 'up';
+				if(tmpCell.type == 'pipe-1' && tmpCell.direction == 'right')
+					tmpCell.direction = 'left';
+			}
+		}
+		
+		this.reconnectAll();
+		
+		// set goal;
+		/*
+		 * copy this.data to this.goal
+		 * */
+		this.goal = $.extend(true, [], this.data); // jQuery hack
+	}
+	
+	this.randomize = function(){	
+		var row, cell, tmpCell; // local variable scope
+		for(row = 0; row < boardSize; row++){
+			for(cell = 0; cell < boardSize; cell++){
+				tmpCell = this.data[row][cell];
+				tmpCell.direction = rand_direction(); // random direction
+			}
+		}
+		
+		// path for pipe-1
+		for(row = 0; row < boardSize; row++){
+			for(cell = 0; cell < boardSize; cell++){
+				tmpCell = this.data[row][cell];
+				if(tmpCell.type == 'pipe-1' && tmpCell.direction == 'down')
+					tmpCell.direction = 'up';
+				if(tmpCell.type == 'pipe-1' && tmpCell.direction == 'right')
+					tmpCell.direction = 'left';
+			}
+		}
+		this.reconnectAll();
+	}
+	
+
+	this.isAllClientOK = function(){
+		var row, cell, tmpCell; // local variable scope
+		
+		ok = true;
+		for(row = 0; row < boardSize; row++){
+			for(cell = 0; cell < boardSize; cell++){
+				tmpCell = this.data[row][cell];
+				
+				if(tmpCell.type == 'client' && tmpCell.active == false){
+					ok = false;
+				}
+				
+			}
+		}
+		return ok;
+	}
+	
+	this.getNeighborCoordinate = function(currentCoordinate, direction){
+		if(direction == 'up'){ 		return this.getUpCoordinate(currentCoordinate); }
+		if(direction == 'right'){ 	return this.getRightCoordinate(currentCoordinate); }
+		if(direction == 'down'){ 	return this.getDownCoordinate(currentCoordinate); }
+		if(direction == 'left'){ 	return this.getLeftCoordinate(currentCoordinate); }
+	}
+	
+	this.getLeftCoordinate = function(currentCoordinate){
+		return [
+			currentCoordinate[0],
+			(currentCoordinate[1] - 1) == -1 ? boardSize - 1 : (currentCoordinate[1] - 1), // check to reverse
+		]
+	}
+	
+	this.getUpCoordinate = function(currentCoordinate){
+		return [
+			(currentCoordinate[0] - 1) == -1 ? boardSize - 1 : (currentCoordinate[0] - 1), // check to reverse
+			currentCoordinate[1],
+		]
+	}
+	
+	this.getRightCoordinate = function(currentCoordinate){
+		return [
+			currentCoordinate[0],
+			(currentCoordinate[1] + 1) == boardSize ? 0 : (currentCoordinate[1] + 1), // check to reverse
+		]
+	}
+	this.getDownCoordinate = function(currentCoordinate){
+		return [
+			(currentCoordinate[0] + 1) == boardSize ? 0 : (currentCoordinate[0] + 1), // check to reverse
+			currentCoordinate[1],
+		]
+	}
+	
 	// return cell
 	this.cellChangeState = function(row, cell, direction){
 		this.data[row][cell].direction = direction;
@@ -55,6 +285,7 @@ function Board() {
 	}
 	
 	this.reconnectAll = function(){
+		var row, cell; // local variable scope
 		sourceCoordinate = [-1, -1];
 		
 		for(row = 0; row < boardSize; row++){
@@ -81,35 +312,7 @@ function Board() {
 			branches = parent.cellActiveBranches(currentCell.type, currentCell.direction);
 			
 			for(branch in branches){
-				branchCoordinate = [-1, -1];
-				
-				if(branches[branch] == 'up'){
-					branchCoordinate = [
-						(currentCoordinate[0] - 1) == -1 ? boardSize - 1 : (currentCoordinate[0] - 1), // check to reverse
-						currentCoordinate[1],
-					];
-				}
-				if(branches[branch] == 'right'){
-					branchCoordinate = [
-						currentCoordinate[0],
-						(currentCoordinate[1] + 1) == boardSize ? 0 : (currentCoordinate[1] + 1), // check to reverse
-					];
-				}
-				if(branches[branch] == 'down'){
-					branchCoordinate = [
-						(currentCoordinate[0] + 1) == boardSize ? 0 : (currentCoordinate[0] + 1), // check to reverse
-						currentCoordinate[1],
-					];
-				}
-				if(branches[branch] == 'left'){
-					branchCoordinate = [
-						currentCoordinate[0],
-						(currentCoordinate[1] - 1) == -1 ? boardSize - 1 : (currentCoordinate[1] - 1), // check to reverse
-					];
-				}
-				
-				if(branchCoordinate[0] == -1 && branchCoordinate[1] == -1) continue; // maybe imposible but, oke..
-				
+				branchCoordinate = parent.getNeighborCoordinate(currentCoordinate, branches[branch])
 				branchCell = parent.data[branchCoordinate[0]][branchCoordinate[1]];
 				if(branchCell.active) continue; // already active	
 				
@@ -185,6 +388,7 @@ function Board() {
 					cellSpan.append($('<span>').addClass('half'));
 				}
 				
+				cellSpan.attr('cell-type', cellObject.type);
 				cellSpan.attr('row', row);
 				cellSpan.attr('cell', cell);
 				cellSpan.addClass(cellObject.type);
