@@ -2,6 +2,15 @@
 @import "bower_components/bootstrap-sass/assets/stylesheets/bootstrap";
 @import "scss/paper/bootswatch";
 
+
+.navbar-brand > img{
+	display:inline-block;
+	width:auto;
+	height:26px;
+	margin-top: -3px;
+}
+
+
 $cell-size-no-px:			40; // optimal 48, max 64
 $cell-size:					#{$cell-size-no-px}px;
 $board-responsize:			$cell-size-no-px/64;
