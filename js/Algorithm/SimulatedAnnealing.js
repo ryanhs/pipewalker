@@ -28,8 +28,8 @@ function testAlgoSA(){
 			$('.alert-win').modal();
 			return;
 		}
-		
 		iterator++;
+		
 		newSolution = $.extend(true, [], solution); // jQuery hack
 		newSolution = AI_modifier(newSolution);
 		newResult = AI_evaluator(newSolution);
@@ -59,7 +59,7 @@ function testAlgoSA(){
 		temperature *= 0.99;
 		
 		// debug
-		logStr = ('SA: i#' + iterator + ' -> t#' + (temperature).toFixed(2) + 'ᵒ -> ' + result.result);
+		logStr = ('[SA] i=' + iterator + ' -> t=' + (temperature).toFixed(2) + 'ᵒ -> r=' + result.result);
 		console.log(logStr);
 		loger.write(logStr);
 		board.data = result.board.data;

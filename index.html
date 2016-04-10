@@ -93,12 +93,10 @@
 								<a class="btn btn-success SA-btn" href="#" onClick="javascript:$('.SA-stop-btn').removeClass('hide');$('.SA-btn').attr('disabled', true);loger.reset();testAlgoSA();return false;">Simulated Annealing</a>
 								<a class="btn btn-danger hide SA-stop-btn" href="#" onClick="javascript:$('.SA-stop-btn').addClass('hide');$('.SA-btn').attr('disabled', false);clearTimeout(testAlgoSATimeout);return false;">Stop</a>
 							</p>
-							<!--
 							<p>
 								<a class="btn btn-success GA-btn" href="#" onClick="javascript:$('.GA-stop-btn').removeClass('hide');$('.GA-btn').attr('disabled', true);loger.reset();testAlgoGA();return false;">Genetic Algorithm</a>
 								<a class="btn btn-danger hide GA-stop-btn" href="#" onClick="javascript:$('.GA-stop-btn').addClass('hide');$('.GA-btn').attr('disabled', false);clearTimeout(testAlgoGATimeout);return false;">Stop</a>
 							</p>
-							-->
 						</p>
 						
 
@@ -170,5 +168,6 @@
 	
 	<script type="text/javascript" src="js/Algorithm/Common.js"></script>
 	<script type="text/javascript" src="js/Algorithm/SimulatedAnnealing.js"></script>
+	<script type="text/javascript" src="js/Algorithm/GeneticAlgorithm.js"></script>
 </body>
 </html>
