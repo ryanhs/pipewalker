@@ -1,5 +1,17 @@
+Math.randomRange = function(min, max) {
+    if (max) {
+        return (min + Math.floor(Math.random() * (max - min + 1)));
+    } else if (min) {
+        return (Math.floor(Math.random() * min + 1))
+    } else {
+        return (Math.floor(Math.random() * 101));
+    }
+}
+
 function mt_rand(max){
-	return Math.floor((Math.random() * 1000) % (max + 1));
+	//return Math.floor((Math.random() * 1000) % (max + 1));
+	
+	return Math.randomRange(0, max);
 }
 
 function rand_direction(){
@@ -203,7 +215,7 @@ function Board() {
 		this.goal = $.extend(true, [], this.data); // jQuery hack
 	}
 	
-	this.randomize = function(){	
+	this.randomize = function(){
 		var row, cell, tmpCell; // local variable scope
 		for(row = 0; row < boardSize; row++){
 			for(cell = 0; cell < boardSize; cell++){
@@ -225,22 +237,46 @@ function Board() {
 		this.reconnectAll();
 	}
 	
-
-	this.isAllClientOK = function(){
-		var row, cell, tmpCell; // local variable scope
+	this.evaluator = function(){
+		// local variable scope
+		var row, 
+			cell, 
+			tmpCell, 
+			clientConnected = 0,
+			pipeConnected = 0,
+			isAllClientOK = true;
 		
-		ok = true;
 		for(row = 0; row < boardSize; row++){
 			for(cell = 0; cell < boardSize; cell++){
 				tmpCell = this.data[row][cell];
 				
 				if(tmpCell.type == 'client' && tmpCell.active == false){
-					ok = false;
+					isAllClientOK = false;
+				}
+				
+				if(tmpCell.type == 'client' && tmpCell.active == true){
+					clientConnected++;
+				}
+				
+				if('pipe-1|pipe-2|pipe-3|'.split('|').indexOf(tmpCell.type) != -1 && tmpCell.active == true){
+					pipeConnected++;
 				}
 				
 			}
 		}
-		return ok;
+		
+		return {
+			clientConnected : clientConnected,
+			pipeConnected : pipeConnected,
+			result : (clientConnected * 3) + (pipeConnected * 1),
+			
+			isAllClientOK : isAllClientOK,
+			board: this, // usefull of AI
+		}
+	}
+
+	this.isAllClientOK = function(){
+		return (this.evaluator()).isAllClientOK;
 	}
 	
 	this.getNeighborCoordinate = function(currentCoordinate, direction){

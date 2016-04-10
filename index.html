@@ -18,22 +18,31 @@
 	<nav class="navbar navbar-default">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<!--
+				
 				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
 					<span class="sr-only">Toggle navigation</span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				-->
+				
 				<a class="navbar-brand" href="#">Pipewalker</a>
 			</div>
-			<!--
+			
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
+					
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">themes <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="#" onClick="javascript:change_theme('plumbing');return false;">plumbing</a></li>
+							<li><a href="#" onClick="javascript:change_theme('network');return false;">network</a></li>
+							<li><a href="#" onClick="javascript:change_theme('simple');return false;">simple</a></li>
+						</ul>
+					</li>
+					
 				</ul>
 			</div>
-			-->
 		</div>
 	</nav>
 	
@@ -44,8 +53,10 @@
 			
 			<div class="col-lg-4 col-md-6">
 				
-				<div class="board well"><table></table></div>
-				
+				<div class="board well">
+					<table></table>
+				</div>
+								
 			</div>
 			
 			
@@ -57,7 +68,7 @@
 				</div>
 			</div>
 			
-			<div class="col-lg-3 col-md-4 col-sm-4 col-xs-6">
+			<div class="col-lg-4 col-md-6">
 				<div class="panel panel-primary">
 					<div class="panel-heading">Control Panel</div>
 					<div class="panel-body">
@@ -65,6 +76,8 @@
 						<p>
 							<strong>create new level?</strong>
 							<div class="btn-group">
+								<a href="#" class="btn btn-danger" onClick="javascript:init_game(3);return false;">3 x 3</a>
+								<a href="#" class="btn btn-warning" onClick="javascript:init_game(4);return false;">4 x 4</a>
 								<a href="#" class="btn btn-success" onClick="javascript:init_game(7);return false;">7 x 7</a>
 								<a href="#" class="btn btn-primary" onClick="javascript:init_game(8);return false;">8 x 8</a>
 								<a href="#" class="btn btn-info" onClick="javascript:init_game(9);return false;">9 x 9</a>
@@ -72,12 +85,17 @@
 						</p>
 						<hr/>
 						<p>
-							<strong>change theme?</strong>
-							<div class="btn-group">
-								<a href="#" class="btn btn-success" onClick="javascript:change_theme('plumbing');return false;">plumbing</a>
-								<a href="#" class="btn btn-primary" onClick="javascript:change_theme('network');return false;">network</a>
-								<a href="#" class="btn btn-info" onClick="javascript:change_theme('simple');return false;">simple</a>
-							</div>
+							<strong>tempted for using AI?</strong>
+							<p>
+								<a class="btn btn-success SA-btn" href="#" onClick="javascript:$('.SA-stop-btn').removeClass('hide');$('.SA-btn').attr('disabled', true);loger.reset();testAlgoSA();return false;">Simulated Annealing</a>
+								<a class="btn btn-danger hide SA-stop-btn" href="#" onClick="javascript:$('.SA-stop-btn').addClass('hide');$('.SA-btn').attr('disabled', false);clearTimeout(testAlgoSATimeout);return false;">Stop</a>
+							</p>
+							<!--
+							<p>
+								<a class="btn btn-success GA-btn" href="#" onClick="javascript:$('.GA-stop-btn').removeClass('hide');$('.GA-btn').attr('disabled', true);loger.reset();testAlgoGA();return false;">Genetic Algorithm</a>
+								<a class="btn btn-danger hide GA-stop-btn" href="#" onClick="javascript:$('.GA-stop-btn').addClass('hide');$('.GA-btn').attr('disabled', false);clearTimeout(testAlgoGATimeout);return false;">Stop</a>
+							</p>
+							-->
 						</p>
 						
 
@@ -137,7 +155,7 @@
 	<script type="text/javascript">
 		
 		// global config
-		var boardSize = 8;
+		var boardSize = 7;
 		var board = null;
 		var debug = false;
 		var loger = null;
@@ -146,5 +164,8 @@
 	<script type="text/javascript" src="js/Board.js"></script>
 	<script type="text/javascript" src="js/Loger.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
+	
+	<script type="text/javascript" src="js/Algorithm/Common.js"></script>
+	<script type="text/javascript" src="js/Algorithm/SimulatedAnnealing.js"></script>
 </body>
 </html>
