@@ -1,4 +1,4 @@
-function AI_random_solution(){
+function AI_randomSolution(){
 	// local variable scope
 	var solution = [],
 		row = 0,
@@ -13,6 +13,30 @@ function AI_random_solution(){
 			
 			if('pipe-1|pipe-2|pipe-3|client|source'.split('|').indexOf(tmpCell.type) != -1){
 				rowArr.push(rand_direction());
+			}else{
+				rowArr.push(false);
+			}
+		}
+		solution.push(rowArr);
+	}
+	
+	return solution;
+}
+
+function AI_getCurrentSolution(){
+	var solution = [],
+		row = 0,
+		rowArr = [],
+		cell = 0,
+		tmpCell;
+	
+	for(row = 0; row < boardSize; row++){
+		rowArr = [];
+		for(cell = 0; cell < boardSize; cell++){
+			tmpCell = board.data[row][cell];
+			
+			if('pipe-1|pipe-2|pipe-3|client|source'.split('|').indexOf(tmpCell.type) != -1){
+				rowArr.push(tmpCell.direction);
 			}else{
 				rowArr.push(false);
 			}
@@ -58,6 +82,8 @@ function AI_evaluator(solution){
 			
 			if(solution[row][cell] != false){
 				tmpBoard.data[row][cell].direction = solution[row][cell];
+			}else{
+				tmpBoard.data[row][cell].direction = false;
 			}
 			
 		}

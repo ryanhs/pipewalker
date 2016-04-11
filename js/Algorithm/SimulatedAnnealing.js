@@ -20,7 +20,7 @@ function testAlgoSA(){
 		result,		newResult
 		;
 	
-	solution = AI_random_solution();
+	solution = AI_randomSolution();
 	result = AI_evaluator(solution);
 	function SA_run(){
 		if(result.isAllClientOK){
@@ -28,8 +28,8 @@ function testAlgoSA(){
 			$('.alert-win').modal();
 			return;
 		}
-		
 		iterator++;
+		
 		newSolution = $.extend(true, [], solution); // jQuery hack
 		newSolution = AI_modifier(newSolution);
 		newResult = AI_evaluator(newSolution);
@@ -50,7 +50,7 @@ function testAlgoSA(){
 		
 		/*
 		if(iterator % 1000 == 0 && result.result < 2){
-			solution = AI_random_solution();
+			solution = AI_randomSolution();
 			result = AI_evaluator(solution);
 			temperature = 1000;
 		}
@@ -59,12 +59,13 @@ function testAlgoSA(){
 		temperature *= 0.99;
 		
 		// debug
-		logStr = ('SA: i#' + iterator + ' -> t#' + (temperature).toFixed(2) + 'ᵒ -> ' + result.result);
+		logStr = ('[SA] i=' + iterator + ' -> t=' + (temperature).toFixed(2) + 'ᵒ -> r=' + result.result);
 		console.log(logStr);
 		loger.write(logStr);
 		board.data = result.board.data;
 		board.reconnectAll();
-		refreshBoard();
+		if(iterator % 10 == 0 || board.isAllClientOK())
+			refreshBoard();
 				
 		testAlgoSATimeout = setTimeout(SA_run, testAlgoSATimeoutTimer);
 	}

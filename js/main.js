@@ -4,6 +4,12 @@ $(function(){
 	
 	init_game();
 	change_theme('simple');
+	
+	//  SA GA BFS AStar
+	$('.AI-list > p').hide();
+	$('SA,GA,AStar'.split(',')).each(function(k, v){
+		$('.' + v + '-btn').parent().show();
+	});
 });
 
 function init_game(newSize){
