@@ -21,22 +21,17 @@ function testAlgoGA(){
 		iterator = 0;
 	
 	//start
-	population = GA_init_population(maxPopulation);
-	statistics = GA_fitness_function(population);
+	population = GA_initPopulation(maxPopulation);
+	statistics = GA_fitnessFunction(population);
 	
 	function GA_run(){
-		if(population[0].board.isAllClientOK()){
-			$('.GA-stop-btn').addClass('hide');
-			$('.GA-btn').removeAttr('disabled');
-			return true;
-		}
 		iterator++;
 		
 		// algo
 		population = population.slice(0, maxBestRanking);
 		population = GA_crossover(population, maxPopulation);
 		population = GA_mutation(population);
-		statistics = GA_fitness_function(population);
+		statistics = GA_fitnessFunction(population);
 		
 		// debug
 		logStr = ('[GA] i=' + iterator + ' -> m=' + (statistics.mean).toFixed(2));
@@ -45,21 +40,27 @@ function testAlgoGA(){
 		board.data = population[0].board.data;
 		board.reconnectAll();
 		refreshBoard();
-				
+		
+		if(board.isAllClientOK()){
+			$('.GA-stop-btn').click();
+			$('.alert-win').modal();
+			return true;
+		}
+		
 		testAlgoGATimeout = setTimeout(GA_run, testAlgoGATimeoutTimer);
 	}
 	
 	testAlgoGATimeout = setTimeout(GA_run, testAlgoGATimeoutTimer);
 }
 
-function GA_init_population(size){
+function GA_initPopulation(size){
 	var population = [],
 		i = 0,
 		tmpBoard = null;
 		
 	for(i = 0; i < size; i++){
 		population.push({
-			'solution': AI_random_solution(),
+			'solution': AI_randomSolution(),
 			'board': null,
 			'evaluator': null,
 		});
@@ -67,7 +68,7 @@ function GA_init_population(size){
 	return population;
 }
 
-function GA_fitness_function(population){
+function GA_fitnessFunction(population){
 	var idx = 0,
 		statistics = {
 			'mean': 0,

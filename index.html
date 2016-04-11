@@ -97,6 +97,12 @@
 								<a class="btn btn-success GA-btn" href="#" onClick="javascript:$('.GA-stop-btn').removeClass('hide');$('.GA-btn').attr('disabled', true);loger.reset();testAlgoGA();return false;">Genetic Algorithm</a>
 								<a class="btn btn-danger hide GA-stop-btn" href="#" onClick="javascript:$('.GA-stop-btn').addClass('hide');$('.GA-btn').attr('disabled', false);clearTimeout(testAlgoGATimeout);return false;">Stop</a>
 							</p>
+							<!--
+							<p>
+								<a class="btn btn-success BFS-btn" href="#" onClick="javascript:$('.BFS-stop-btn').removeClass('hide');$('.BFS-btn').attr('disabled', true);loger.reset();testAlgoBFS();return false;">Best First Search</a>
+								<a class="btn btn-danger hide BFS-stop-btn" href="#" onClick="javascript:$('.BFS-stop-btn').addClass('hide');$('.BFS-btn').attr('disabled', false);clearTimeout(testAlgoBFSTimeout);return false;">Stop</a>
+							</p>
+							-->
 						</p>
 						
 
@@ -169,5 +175,6 @@
 	<script type="text/javascript" src="js/Algorithm/Common.js"></script>
 	<script type="text/javascript" src="js/Algorithm/SimulatedAnnealing.js"></script>
 	<script type="text/javascript" src="js/Algorithm/GeneticAlgorithm.js"></script>
+	<script type="text/javascript" src="js/Algorithm/BestFirstSearch.js"></script>
 </body>
 </html>

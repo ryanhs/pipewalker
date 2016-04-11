@@ -1,4 +1,4 @@
-function AI_random_solution(){
+function AI_randomSolution(){
 	// local variable scope
 	var solution = [],
 		row = 0,
@@ -21,6 +21,10 @@ function AI_random_solution(){
 	}
 	
 	return solution;
+}
+
+function AI_getCurrentSolution(){
+	
 }
 
 function AI_modifier(solution){

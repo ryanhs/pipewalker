@@ -94,7 +94,7 @@ function Board() {
 				currentCell.type = 'pipe-1|pipe-2|pipe-3|pipe-3|pipe-3'.split('|')[mt_rand(4)];
 			}
 			else{
-				currentCell.type = 'pipe-1|pipe-2|pipe-3|client|client'.split('|')[mt_rand(4)];
+				currentCell.type = 'pipe-1|pipe-2|pipe-3|client|client|client'.split('|')[mt_rand(5)];
 			}
 			
 			direction = 'up';

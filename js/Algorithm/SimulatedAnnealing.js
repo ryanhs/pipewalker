@@ -20,7 +20,7 @@ function testAlgoSA(){
 		result,		newResult
 		;
 	
-	solution = AI_random_solution();
+	solution = AI_randomSolution();
 	result = AI_evaluator(solution);
 	function SA_run(){
 		if(result.isAllClientOK){
@@ -50,7 +50,7 @@ function testAlgoSA(){
 		
 		/*
 		if(iterator % 1000 == 0 && result.result < 2){
-			solution = AI_random_solution();
+			solution = AI_randomSolution();
 			result = AI_evaluator(solution);
 			temperature = 1000;
 		}
