@@ -82,6 +82,8 @@ function AI_evaluator(solution){
 			
 			if(solution[row][cell] != false){
 				tmpBoard.data[row][cell].direction = solution[row][cell];
+			}else{
+				tmpBoard.data[row][cell].direction = false;
 			}
 			
 		}
