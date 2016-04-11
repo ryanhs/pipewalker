@@ -25,6 +25,7 @@ function rand_direction(){
 function Board() {
 	this.data = [];
 	this.goal = [];
+	this.evaluatorCache = null;
 	this.defaultDataType = [
 		['blank', 'client', 'pipe-2', 'pipe-1'],
 		['pipe-3', 'pipe-2', 'pipe-1', 'pipe-2'],
@@ -265,14 +266,16 @@ function Board() {
 			}
 		}
 		
-		return {
+		this.evaluatorCache = {
 			clientConnected : clientConnected,
 			pipeConnected : pipeConnected,
 			result : (clientConnected * 3) + (pipeConnected * 1),
 			
 			isAllClientOK : isAllClientOK,
 			board: this, // usefull of AI
-		}
+		};
+		
+		return this.evaluatorCache;
 	}
 
 	this.isAllClientOK = function(){

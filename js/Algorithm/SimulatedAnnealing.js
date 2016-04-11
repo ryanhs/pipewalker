@@ -64,7 +64,8 @@ function testAlgoSA(){
 		loger.write(logStr);
 		board.data = result.board.data;
 		board.reconnectAll();
-		refreshBoard();
+		if(iterator % 10 == 0 || board.isAllClientOK())
+			refreshBoard();
 				
 		testAlgoSATimeout = setTimeout(SA_run, testAlgoSATimeoutTimer);
 	}

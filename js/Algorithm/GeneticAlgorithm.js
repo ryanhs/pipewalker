@@ -39,7 +39,8 @@ function testAlgoGA(){
 		loger.write(logStr);
 		board.data = population[0].board.data;
 		board.reconnectAll();
-		refreshBoard();
+		if(iterator % 10 == 0 || board.isAllClientOK())
+			refreshBoard();
 		
 		if(board.isAllClientOK()){
 			$('.GA-stop-btn').click();
