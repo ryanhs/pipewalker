@@ -7,6 +7,13 @@
 typedef struct{
 	short int size;
 	tile_struct ***data;
+	
+	
+	int result;
+	int clientConnected;
+	int pipeConnected;
+	
+	short int isAllClientOK;
 } board_struct;
 
 board_struct* board_create(int size);
@@ -19,5 +26,6 @@ tile_struct *board_get_down_tile(board_struct *board, short int row, short int c
 tile_struct *board_get_right_tile(board_struct *board, short int row, short int cell);
 
 void board_parseJSON(board_struct *board, cJSON *JSON);
+void board_evaluator(board_struct *board);
 
 #endif

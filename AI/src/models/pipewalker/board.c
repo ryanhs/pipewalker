@@ -28,6 +28,11 @@ board_struct *board_create(int size){
 		board->data[row_i] = row;
 	}
 	
+	board->result = 0;
+	board->clientConnected = 0;
+	board->pipeConnected = 0;
+	board->isAllClientOK = 0;
+	
 	return board;
 }
 
@@ -147,4 +152,37 @@ void board_parseJSON(board_struct *board, cJSON *JSON){
 	
 	row_i++;
 	row_tmp = row_tmp->next; }
+}
+
+
+void board_evaluator(board_struct *board){
+	short int row_i;
+	short int cell_i;
+	tile_struct *tmp;
+	
+	board->clientConnected = 0;
+	board->pipeConnected = 0;
+	board->result = 0;
+	board->isAllClientOK = 1;
+	
+	for(row_i = 0; row_i < board->size; row_i++){
+		for(cell_i = 0; cell_i < board->size; cell_i++){
+			tmp = board_get_tile(board, row_i, cell_i);
+			
+			// check client connected
+			if((tmp->type == TILE_CLIENT) && (tmp->active == TILE_ACTIVE)) board->clientConnected++;
+			
+			// check pipe connected
+			if((tmp->type == TILE_PIPE_1) && (tmp->active == TILE_ACTIVE)) board->pipeConnected++;
+			if((tmp->type == TILE_PIPE_2) && (tmp->active == TILE_ACTIVE)) board->pipeConnected++;
+			if((tmp->type == TILE_PIPE_3) && (tmp->active == TILE_ACTIVE)) board->pipeConnected++;
+			
+			// check isAllClientOK
+			if((tmp->type == TILE_CLIENT) && (tmp->active == TILE_INACTIVE)) board->isAllClientOK = 0;
+			
+		}
+	}
+	
+	// make result
+	board->result = (board->clientConnected * 3) + (board->pipeConnected * 1);
 }

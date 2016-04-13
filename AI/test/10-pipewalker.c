@@ -51,7 +51,7 @@ void testBoardData(){
 	char str[64];
 	
 	for(row_i = 0; row_i < board->size; row_i++){
-		printf("\n");
+		//printf("\n");
 			
 		for(cell_i = 0; cell_i < board->size; cell_i++){
 			ASSERT(board_get_tile(board, row_i, cell_i) != NULL);
@@ -59,7 +59,7 @@ void testBoardData(){
 			memset(str, 0, 64);
 			tile_to_string(str, board_get_tile(board, row_i, cell_i));
 			
-			printf("\t[%d][%d] -> %s\n", row_i, cell_i, str);
+			//printf("\t[%d][%d] -> %s\n", row_i, cell_i, str);
 		}
 	}
 }
@@ -97,7 +97,15 @@ void testBoardReconnect(){
 		}
 	}
 	
-		
+	if(source_row && source_cell)	return ;
+}
+
+void testBoardEvaluate(){
+	board_evaluator(board);
+	ASSERT(board->result > 0);
+	ASSERT(board->pipeConnected > 0);
+	ASSERT(board->clientConnected == 0);
+	
 }
 
 void TEST_ROUTE(){
@@ -107,7 +115,8 @@ void TEST_ROUTE(){
 	TEST_CALL("test create board", testBoardCreate);
 	TEST_CALL("test parse", testBoardParse);
 	TEST_CALL("test board\'s data test", testBoardData);
-	TEST_CALL("test reconnect", testBoardReconnect);
+	//TEST_CALL("test reconnect", testBoardReconnect);
+	TEST_CALL("test evaluator", testBoardEvaluate);
 	
 	//TEST_CALL("invalid json", testInvalidJSON);
 	
