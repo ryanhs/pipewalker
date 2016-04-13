@@ -10,6 +10,25 @@ $(function(){
 	$('SA,GA,AStar'.split(',')).each(function(k, v){
 		$('.' + v + '-btn').parent().show();
 	});
+	
+	
+	
+	
+	$.get('AI/config.json', function(configJSON){
+		var api_url = 'http://' + configJSON.http_host + ':' + configJSON.http_port;
+		API.setUrl(api_url);
+		
+		// test
+		API.get({
+			method: 'ping', 
+			params: {
+				
+			}
+		}, function(d){
+			console.log('API response: ' + d);
+		});
+		
+	});
 });
 
 function init_game(newSize){
