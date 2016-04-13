@@ -1,0 +1,102 @@
+#!/usr/bin/php
+<?php
+
+(PHP_SAPI !== 'cli' || isset($_SERVER['HTTP_USER_AGENT'])) && exit;
+ini_set('memory_limit','8M');
+ini_set('max_execution_time', 300);
+
+// some config
+$prefix_dir = 'AI';
+$dir = 'build';
+$ext = '.c';
+
+$argv = $_SERVER['argv'];
+$argc = $_SERVER['argc'];
+
+$file_to_test = $argc > 1 && file_exists($prefix_dir . '/' . $dir . '/' . @$argv['1'] . $ext) ? $dir . '/' . @$argv['1'] . $ext : false;
+function is_param($is){
+	global $argc, $argv;
+	if($argc == 1) return false;
+	
+	return $argv['1'] == '--' . $is || $argv['1'] == $is;
+}
+
+function cleaning($withDotRun = true){
+	global $dir, $prefix_dir;
+	
+	$d = dir($prefix_dir . '/' . $dir);
+	while (false !== ($entry = $d->read())) {
+		if($entry == '.' || $entry == '..') continue;
+		if(substr($entry, -2) == '.o') @unlink($prefix_dir . '/' . $dir . '/' . $entry);
+		if(substr($entry, -4) == '.out') @unlink($prefix_dir . '/' . $dir . '/' . $entry);
+		if($withDotRun && substr($entry, -4) == '.run') @unlink($prefix_dir . '/' . $dir . '/' . $entry);
+	}
+	$d->close();
+}
+
+// clean
+if(is_param('clean')){
+	cleaning();
+	die('Cleaning...' . PHP_EOL . PHP_EOL);
+}
+
+else if(is_param('compile')){
+	cleaning(); // fresh dir for every build
+
+	$build_files = array();
+	$json = json_decode(file_get_contents($prefix_dir . '/' . 'build/build.json'), true);
+	$param = "";
+	if(isset($json['param'])){
+		$param = implode(' ', $json['param']);
+	}
+
+	echo "# Build:" . PHP_EOL;
+
+	$compile_files = array();
+	foreach($json['source'] as $source){
+		$source_pathinfo = pathinfo($source);
+		
+		$path = realpath(__DIR__ . '/' . $prefix_dir . '/' . $dir);
+		$cwd = substr($path, strlen(__DIR__) + 1);
+		//echo $cwd;exit;
+		$path_compile = $cwd . '/' . $source_pathinfo['filename'] . '.o';
+		$compile_files[] = $path_compile;
+		
+		$compile_source = $prefix_dir . '/' . $source;
+		
+		echo "  - compile: " . $prefix_dir . '/' . $compile_source . PHP_EOL;
+		system("gcc -Wall -c -g -o {$path_compile} {$compile_source} {$param}");
+	}
+
+	$compiles = implode(' ', $compile_files);
+	echo "# build & clean: " . $json['output'] . PHP_EOL;
+
+	//system("gcc -o {$dir}/{$json['output']} {$compiles} {$param}");
+	$compile_dir = $prefix_dir . '/' . $dir;
+	$compile_output = $prefix_dir . '/' . $dir . '/' . $json['output'];
+	$compile_output_shortcut = $json['output'];
+	
+	@unlink("{$compile_output}");
+	system("gcc -g -o {$compile_output} {$compiles} {$param}");
+	cleaning(false);
+	
+	
+	if(file_exists($compile_output_shortcut)) @unlink($compile_output_shortcut);
+	system("ln -s {$compile_output} {$compile_output_shortcut}");
+	
+	echo "# build completed!" . PHP_EOL;
+	die ("# run: " . $compile_output_shortcut . PHP_EOL . PHP_EOL);
+}
+
+else{
+	echo "# C-WEB API Framework #" . PHP_EOL;
+	echo PHP_EOL;
+	echo "usage  : ./build --[options]" . PHP_EOL;
+	echo "options:" . PHP_EOL;
+	echo "\tclean" . PHP_EOL;
+	echo "\tcompile" . PHP_EOL;
+	echo "example:" . PHP_EOL;
+	echo "\t./build --compile" . PHP_EOL;
+	echo "\t./build compile" . PHP_EOL;
+	die (PHP_EOL);
+}
