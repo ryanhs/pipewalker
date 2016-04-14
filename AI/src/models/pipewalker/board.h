@@ -26,6 +26,12 @@ tile_struct *board_get_down_tile(board_struct *board, short int row, short int c
 tile_struct *board_get_right_tile(board_struct *board, short int row, short int cell);
 
 void board_parseJSON(board_struct *board, cJSON *JSON);
+void board_reconnectAll(board_struct *board);
 void board_evaluator(board_struct *board);
+
+board_struct *board_clone(board_struct *board);
+cJSON *board_JSON(board_struct *board);
+
+short int *board_get_source_coordinate(board_struct *board);
 
 #endif

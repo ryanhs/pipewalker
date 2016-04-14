@@ -81,23 +81,8 @@ void testBoardParse(){
 }
 
 void testBoardReconnect(){
-	short int row_i;
-	short int cell_i;
-	
-	short int source_row;
-	short int source_cell;
-	for(row_i = 0; row_i < board->size; row_i++){
-		for(cell_i = 0; cell_i < board->size; cell_i++){
-			if(board_get_tile(board, row_i, cell_i)->type == TILE_SOURCE){
-				source_row = row_i;
-				source_cell = cell_i;
-				break;
-				break;
-			}
-		}
-	}
-	
-	if(source_row && source_cell)	return ;
+	board_reconnectAll(board);
+	ASSERT(board_get_tile(board, 0, 1)->active ==  TILE_INACTIVE);
 }
 
 void testBoardEvaluate(){
@@ -108,17 +93,111 @@ void testBoardEvaluate(){
 	
 }
 
+void testBoardClone(){
+	board_struct *newBoard = board_clone(board);
+	
+	ASSERT(board->size == newBoard->size);
+	
+	short int row_i;
+	short int cell_i;
+	for(row_i = 0; row_i < board->size; row_i++){
+		for(cell_i = 0; cell_i < board->size; cell_i++){
+			ASSERT(board_get_tile(board, row_i, cell_i)->type == board_get_tile(newBoard, row_i, cell_i)->type);
+			ASSERT(board_get_tile(board, row_i, cell_i)->active == board_get_tile(newBoard, row_i, cell_i)->active);
+			ASSERT(board_get_tile(board, row_i, cell_i)->direction == board_get_tile(newBoard, row_i, cell_i)->direction);
+		}
+	}
+	
+	
+	board_destroy(newBoard);
+}
+
+void testBoardJSON(){
+	cJSON *json = board_JSON(board);
+	
+	board_struct *newBoard = board_create(board->size);
+	board_parseJSON(newBoard, json);
+	
+	short int row_i;
+	short int cell_i;
+	for(row_i = 0; row_i < board->size; row_i++){
+		for(cell_i = 0; cell_i < board->size; cell_i++){
+			ASSERT(board_get_tile(board, row_i, cell_i)->type == board_get_tile(newBoard, row_i, cell_i)->type);
+			ASSERT(board_get_tile(board, row_i, cell_i)->active == board_get_tile(newBoard, row_i, cell_i)->active);
+			ASSERT(board_get_tile(board, row_i, cell_i)->direction == board_get_tile(newBoard, row_i, cell_i)->direction);
+		}
+	}
+	
+	board_destroy(newBoard);
+	cJSON_Delete(json);
+}
+
+void testBoardSource(){
+	short int *coor = board_get_source_coordinate(board);
+	ASSERT(0 == *coor);
+	ASSERT(2 == *(coor + 1));
+	
+	free(coor);
+}
+
+void testTileBranches(){
+	ASSERT(tile_has_up(		TILE_SOURCE, TILE_UP));
+	ASSERT(tile_has_right(	TILE_SOURCE, TILE_RIGHT));
+	ASSERT(tile_has_down(	TILE_SOURCE, TILE_DOWN));
+	ASSERT(tile_has_left(	TILE_SOURCE, TILE_LEFT));
+	
+	ASSERT(tile_has_up(		TILE_CLIENT, TILE_UP));
+	ASSERT(tile_has_right(	TILE_CLIENT, TILE_RIGHT));
+	ASSERT(tile_has_down(	TILE_CLIENT, TILE_DOWN));
+	ASSERT(tile_has_left(	TILE_CLIENT, TILE_LEFT));
+	
+	ASSERT(tile_has_up(		TILE_PIPE_1, TILE_UP));
+	ASSERT(tile_has_down(	TILE_PIPE_1, TILE_UP));
+	ASSERT(tile_has_right(	TILE_PIPE_1, TILE_RIGHT));
+	ASSERT(tile_has_left(	TILE_PIPE_1, TILE_RIGHT));
+	ASSERT(tile_has_up(		TILE_PIPE_1, TILE_DOWN));
+	ASSERT(tile_has_down(	TILE_PIPE_1, TILE_DOWN));
+	ASSERT(tile_has_right(	TILE_PIPE_1, TILE_LEFT));
+	ASSERT(tile_has_left(	TILE_PIPE_1, TILE_LEFT));
+	
+	ASSERT(tile_has_up(		TILE_PIPE_2, TILE_UP));
+	ASSERT(tile_has_right(	TILE_PIPE_2, TILE_UP));
+	ASSERT(tile_has_right(	TILE_PIPE_2, TILE_RIGHT));
+	ASSERT(tile_has_down(	TILE_PIPE_2, TILE_RIGHT));
+	ASSERT(tile_has_down(	TILE_PIPE_2, TILE_DOWN));
+	ASSERT(tile_has_left(	TILE_PIPE_2, TILE_DOWN));
+	ASSERT(tile_has_left(	TILE_PIPE_2, TILE_LEFT));
+	ASSERT(tile_has_up(		TILE_PIPE_2, TILE_LEFT));
+	
+	ASSERT(tile_has_up(		TILE_PIPE_3, TILE_UP));
+	ASSERT(tile_has_right(	TILE_PIPE_3, TILE_UP));
+	ASSERT(tile_has_down(	TILE_PIPE_3, TILE_UP));
+	ASSERT(tile_has_right(	TILE_PIPE_3, TILE_RIGHT));
+	ASSERT(tile_has_down(	TILE_PIPE_3, TILE_RIGHT));
+	ASSERT(tile_has_left(	TILE_PIPE_3, TILE_RIGHT));
+	ASSERT(tile_has_down(	TILE_PIPE_3, TILE_DOWN));
+	ASSERT(tile_has_left(	TILE_PIPE_3, TILE_DOWN));
+	ASSERT(tile_has_up(		TILE_PIPE_3, TILE_DOWN));
+	ASSERT(tile_has_left(	TILE_PIPE_3, TILE_LEFT));
+	ASSERT(tile_has_up(		TILE_PIPE_3, TILE_LEFT));
+	ASSERT(tile_has_right(	TILE_PIPE_3, TILE_LEFT));
+}
+
 void TEST_ROUTE(){
 	route_add("ping", method_ping);
 	
 	TEST_CALL("test read json", testReadJSON);
 	TEST_CALL("test create board", testBoardCreate);
 	TEST_CALL("test parse", testBoardParse);
-	TEST_CALL("test board\'s data test", testBoardData);
-	//TEST_CALL("test reconnect", testBoardReconnect);
+	TEST_CALL("test JSON of board\'s data", testBoardJSON);
+		TEST_CALL("test board\'s data test", testBoardData);
+	
+	TEST_CALL("test source coordinate", testBoardSource);
+	TEST_CALL("test tile branches", testTileBranches);
+	TEST_CALL("test reconnect", testBoardReconnect);
 	TEST_CALL("test evaluator", testBoardEvaluate);
+		TEST_CALL("test board\'s data test", testBoardData);
 	
-	//TEST_CALL("invalid json", testInvalidJSON);
-	
+	TEST_CALL("test clone board", testBoardClone);
 	TEST_CALL("test destroy board", testBoardDestroy);
 }

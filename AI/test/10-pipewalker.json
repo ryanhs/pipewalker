@@ -2,6 +2,7 @@
 	"source": [
 		"src/models/pipewalker/board.c",
 		"src/models/pipewalker/tile.c",
+		"src/helpers/map.c",
 		
 		"src/models/config.c",
 		"src/models/route.c",

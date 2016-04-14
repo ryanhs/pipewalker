@@ -4,6 +4,7 @@
 #include "tile.h"
 #include "board.h"
 #include "../../../lib/safeTo/safeTo.h"
+#include "../../helpers/map.h"
 
 
 board_struct *board_create(int size){
@@ -131,20 +132,16 @@ void board_parseJSON(board_struct *board, cJSON *JSON){
 				);
 				
 				// active
-				board->data[row_i][cell_i]->active = cJSON_GetObjectItem(cell_tmp, "active")->valueint == 1 ? TILE_ACTIVE : TILE_INACTIVE;
+				board->data[row_i][cell_i]->active = cJSON_GetObjectItem(cell_tmp, "active")->type == cJSON_True ? TILE_ACTIVE : TILE_INACTIVE;
 				
 				// direction
-				if(strcmp(cJSON_GetObjectItem(cell_tmp, "type")->valuestring, "blank") == 0){
-					board->data[row_i][cell_i]->direction = TILE_UP;
-				}else{
-					board->data[row_i][cell_i]->direction = (
-						(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "up") == 0 ? TILE_UP :
-						(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "left") == 0 ? TILE_LEFT : 
-						(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "down") == 0 ? TILE_DOWN : 
-						(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "right") == 0 ? TILE_RIGHT : TILE_UP
-						))))
-					);
-				}
+				board->data[row_i][cell_i]->direction = (
+					(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "up") == 0 ? TILE_UP :
+					(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "left") == 0 ? TILE_LEFT : 
+					(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "down") == 0 ? TILE_DOWN : 
+					(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "right") == 0 ? TILE_RIGHT : TILE_UP
+					))))
+				);
 			}
 			
 		cell_i++;
@@ -185,4 +182,84 @@ void board_evaluator(board_struct *board){
 	
 	// make result
 	board->result = (board->clientConnected * 3) + (board->pipeConnected * 1);
+}
+
+void board_reconnectAll(board_struct *board){
+	
+	
+	
+}
+
+board_struct *board_clone(board_struct *board){
+	board_struct *newBoard = board_create(board->size);
+	
+	short int row_i;
+	short int cell_i;
+	for(row_i = 0; row_i < board->size; row_i++){
+		for(cell_i = 0; cell_i < board->size; cell_i++){
+			newBoard->data[row_i][cell_i]->type = 		board->data[row_i][cell_i]->type;
+			newBoard->data[row_i][cell_i]->active = 	board->data[row_i][cell_i]->active;
+			newBoard->data[row_i][cell_i]->direction =	board->data[row_i][cell_i]->direction;
+		}
+	}
+	
+	return newBoard;
+}
+
+cJSON *board_JSON(board_struct *board){
+	cJSON *root;
+	cJSON *row_tmp;
+	cJSON *cell_tmp;
+	char tmpStr[64];
+	
+	root = cJSON_CreateArray();
+	
+	short int row_i;
+	short int cell_i;
+	for(row_i = 0; row_i < board->size; row_i++){
+		row_tmp = cJSON_CreateArray();
+		
+		for(cell_i = 0; cell_i < board->size; cell_i++){
+			cell_tmp = cJSON_CreateObject();
+			
+			
+			cJSON_AddStringToObject(cell_tmp, "type", tile_type_string2JSON(tmpStr, board_get_tile(board, row_i, cell_i)));
+			if(board_get_tile(board, row_i, cell_i)->active == TILE_ACTIVE)
+				cJSON_AddTrueToObject(cell_tmp, "active");
+			else
+				cJSON_AddFalseToObject(cell_tmp, "active");
+			cJSON_AddStringToObject(cell_tmp, "direction", tile_direction_string2JSON(tmpStr, board_get_tile(board, row_i, cell_i)));
+			
+			cJSON_AddItemToArray(row_tmp, cell_tmp);
+		}
+		
+		cJSON_AddItemToArray(root, row_tmp);
+	}
+	
+	return root;	
+}
+
+short int *board_get_source_coordinate(board_struct *board){
+	short int row_i;
+	short int cell_i;
+	
+	short int *result = calloc(2, sizeof(short int));	
+						 result[0] = -1;
+						 result[1] = -1;
+	
+	for(row_i = 0; row_i < board->size; row_i++){
+		for(cell_i = 0; cell_i < board->size; cell_i++){
+			if(board_get_tile(board, row_i, cell_i)->type == TILE_SOURCE){				
+				result[0] = row_i;
+				result[1] = cell_i;
+				break;
+				break;
+			}
+		}
+	}
+	
+	
+	if(result[0] == -1 && result[1] == -1) return NULL; // there is no source!!!
+	
+	return result;
 }
