@@ -58,7 +58,7 @@ char *tile_to_string(char *output, tile_struct *tile){
 	sprintf(output, "%s%s/", output, tile_active_string(tmp, tile));
 	
 	memset(tmp, 0, 64);
-	sprintf(output, "%s%s", output, tile_type_string2JSON(tmp, tile));
+	sprintf(output, "%s%s", output, tile_direction_string2JSON(tmp, tile));
 	
 	return output;
 }
@@ -161,6 +161,7 @@ short int *tile_active_branches(short int tile_type, short int tile_direction){
 short int tile_has_direction(short int tile_type, short int tile_direction, short int comparator){
 	short int *branches = tile_active_branches(tile_type, tile_direction);
 	short int *tmpFree = branches;
+	if(branches == NULL) return 0;
 	
 	while(*branches){
 		if(*branches == comparator) break;
