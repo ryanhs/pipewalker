@@ -69,6 +69,28 @@ void testGet(){
 	map_item_delete(start);
 }
 
+void testSize(){
+	map_item *start;
+	map_item *tmp;
+	
+	start = map_item_add(NULL, "1");
+			start->valueInt1 = 1;
+			start->valueInt2 = 2;
+			start->valueInt3 = 3;
+	
+	tmp =	map_item_add(start, "2");
+			tmp->valueInt1 = 4;
+			tmp->valueInt2 = 5;
+			tmp->valueInt3 = 6;
+	
+	ASSERT(map_size(start) == 2);
+	
+	map_item_remove(start, "2");
+	ASSERT(map_size(start) == 1);
+	
+	map_item_delete(start);
+}
+
 void testNotFound(){
 	map_item *start;
 	map_item *tmp;
@@ -128,9 +150,109 @@ void testRemove(){
 	map_item_delete(start);
 }
 
+void testWalk_callback(map_item *tmp){
+	//~ printf("%d, %d, %d\n", tmp->valueInt1, tmp->valueInt3, tmp->valueInt2);
+	ASSERT(tmp->valueInt1 > 10);
+}
+
+void testWalk(){
+	map_item *start;
+	map_item *tmp;
+	
+	start = map_item_add(NULL, "1");
+			start->valueInt1 = 11;
+			start->valueInt2 = 2;
+			start->valueInt3 = 3;
+	
+	tmp =	map_item_add(start, "2");
+			tmp->valueInt1 = 12;
+			tmp->valueInt2 = 5;
+			tmp->valueInt3 = 6;
+	
+	tmp =	map_item_add(start, "3");
+			tmp->valueInt1 = 13;
+			tmp->valueInt2 = 8;
+			tmp->valueInt3 = 9;
+			
+	map_walk(start, testWalk_callback);
+	map_item_delete(start);
+}
+
+void testLast(){
+	map_item *start;
+	map_item *tmp;
+	
+	start = map_item_add(NULL, "1");
+			start->valueInt1 = 11;
+			start->valueInt2 = 2;
+			start->valueInt3 = 3;
+	
+	tmp =	map_item_add(start, "2");
+			tmp->valueInt1 = 12;
+			tmp->valueInt2 = 5;
+			tmp->valueInt3 = 6;
+	
+	tmp =	map_item_add(start, "3");
+			tmp->valueInt1 = 13;
+			tmp->valueInt2 = 8;
+			tmp->valueInt3 = 9;
+	
+	ASSERT(map_item_get(start, "1") != NULL);
+	ASSERT(map_item_get(start, "2") != NULL);
+	ASSERT(map_item_get(start, "3") != NULL);
+	ASSERT(map_item_get(start, "4") == NULL);
+	
+	map_last(&start);
+	ASSERT(start->valueInt1 == 13);
+	ASSERT(start->valueInt2 == 8);
+	ASSERT(start->valueInt3 == 9);
+	
+	map_item_delete(start);
+}
+
+void testPop(){
+	map_item *start;
+	map_item *tmp;
+	
+	start = map_item_add(NULL, "1");
+			start->valueInt1 = 11;
+			start->valueInt2 = 2;
+			start->valueInt3 = 3;
+	
+	tmp =	map_item_add(start, "2");
+			tmp->valueInt1 = 12;
+			tmp->valueInt2 = 5;
+			tmp->valueInt3 = 6;
+	
+	tmp =	map_item_add(start, "3");
+			tmp->valueInt1 = 13;
+			tmp->valueInt2 = 8;
+			tmp->valueInt3 = 9;
+	
+	ASSERT(map_item_get(start, "1") != NULL);
+	ASSERT(map_item_get(start, "2") != NULL);
+	ASSERT(map_item_get(start, "3") != NULL);
+	ASSERT(map_item_get(start, "4") == NULL);
+	
+	ASSERT(map_size(start) == 3);
+	
+	tmp = map_item_pop(start);
+	ASSERT(tmp->valueInt1 == 13);
+	ASSERT(tmp->valueInt2 == 8);
+	ASSERT(tmp->valueInt3 == 9);
+	ASSERT(map_size(start) == 2);
+	
+	map_item_delete(tmp);
+	map_item_delete(start);
+}
+
 void TEST_ROUTE(){
 	TEST_CALL("test add", testAdd);
 	TEST_CALL("test get", testGet);
+	TEST_CALL("test size", testSize);
 	TEST_CALL("test not found", testNotFound);
 	TEST_CALL("test remove", testRemove);
+	TEST_CALL("test walk", testWalk);
+	TEST_CALL("test last", testLast);
+	TEST_CALL("test pop", testPop);
 }

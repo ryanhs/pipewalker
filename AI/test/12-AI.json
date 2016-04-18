@@ -1,0 +1,23 @@
+{
+	"source": [
+		"src/childs/dataRefresher.c",
+		"src/helpers/map.c",
+		"src/models/pipewalker/tile.c",
+		"src/models/pipewalker/board.c",
+		"src/models/pipewalker/algorithm/BFS.c",
+		
+		"src/models/config.c",
+		"src/models/route.c",
+		"src/helpers/handler.c",
+		"lib/http-parser/http_parser.c",
+		"lib/cJSON/cJSON.c",
+		"lib/safeTo/safeTo.c"
+	],
+	
+	"param": [
+		"$(mysql_config --libs)",
+		"$(mysql_config --cflags)",
+		"-lm",
+		"-DHTTP_PARSER_STRICT=0"
+	]
+}

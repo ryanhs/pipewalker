@@ -36,6 +36,7 @@ void board_evaluator(board_struct *board);
 
 board_struct *board_clone(board_struct *board);
 cJSON *board_JSON(board_struct *board);
+char *board_JSONString(board_struct *board);
 
 short int *board_get_source_coordinate(board_struct *board);
 short int *coordinate_format(short int row_i, short int cell_i);

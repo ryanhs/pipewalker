@@ -37,8 +37,10 @@ function testAlgoBFS(){
 					
 					if(testAlgoBFSlog.indexOf(newSolutionStringify) != -1) continue;
 					
-					moves.push(newSolutionStringify);
+					
 					movesEvaluator[newSolutionStringify] = AI_evaluator(newSolution);
+					//~ if(movesEvaluator[newSolutionStringify].board.data[row][cell].active == true)
+						moves.push(newSolutionStringify);
 				}
 			}
 			

@@ -7,12 +7,12 @@ $(function(){
 	
 	//  SA GA BFS AStar
 	$('.AI-list > p').hide();
-	$('SA,GA,AStar'.split(',')).each(function(k, v){
+	$('SA,BFS,AStar'.split(',')).each(function(k, v){
 		$('.' + v + '-btn').parent().show();
 	});
 	
 	
-	
+	return;
 	
 	$.get('AI/config.json', function(configJSON){
 		var api_url = 'http://' + configJSON.http_host + ':' + configJSON.http_port;

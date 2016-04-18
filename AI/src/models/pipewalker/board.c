@@ -402,6 +402,14 @@ cJSON *board_JSON(board_struct *board){
 	return root;
 }
 
+char *board_JSONString(board_struct *board){
+	cJSON *json = board_JSON(board);
+	char *out=cJSON_PrintUnformatted(json);
+	
+	cJSON_Delete(json);
+	return out;
+}
+
 short int *board_get_source_coordinate(board_struct *board){
 	short int row_i;
 	short int cell_i;

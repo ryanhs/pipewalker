@@ -51,3 +51,17 @@ void pthread_mysleep(int s){
     pthread_cond_timedwait(&fakeCond, &fakeMutex, &timeToWait);
     pthread_mutex_unlock(&fakeMutex);
 }
+
+void pthread_ms_sleep(int ms){
+	struct timespec timeToWait;
+    struct timeval now;
+    
+    gettimeofday(&now,NULL);
+
+    timeToWait.tv_sec = now.tv_sec;
+    timeToWait.tv_nsec = now.tv_usec*ms;
+
+    pthread_mutex_lock(&fakeMutex);
+    pthread_cond_timedwait(&fakeCond, &fakeMutex, &timeToWait);
+    pthread_mutex_unlock(&fakeMutex);
+}

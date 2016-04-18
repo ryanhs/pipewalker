@@ -108,6 +108,10 @@
 							</p>
 						</div>
 						
+						<hr/>
+						<textarea id="newjson" style="width: 390px;height: 110px;"></textarea><br/>
+						<a onclick="javascript:board.data=JSON.parse($('#newjson').val());refreshBoard();return false;" class="btn btn-primary">change!</a>
+						
 
 					</div>
 				</div>
@@ -171,7 +175,9 @@
 		var loger = null;
 		
 	</script>
+<!--
 	<script type="text/javascript" src="js/api-jquery.js"></script>
+-->
 	
 	<script type="text/javascript" src="js/Board.js"></script>
 	<script type="text/javascript" src="js/Loger.js"></script>

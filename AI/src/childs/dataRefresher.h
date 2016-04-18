@@ -7,5 +7,6 @@ void refresher_init();
 
 void getTime(char *timing);
 void pthread_mysleep(int s);
+void pthread_ms_sleep(int ms);
 
 #endif
