@@ -5,6 +5,7 @@
 		"src/models/pipewalker/tile.c",
 		"src/models/pipewalker/board.c",
 		"src/models/pipewalker/algorithm/BFS.c",
+		"src/models/pipewalker/algorithm/AStar.c",
 		
 		"src/models/config.c",
 		"src/models/route.c",
