@@ -77,8 +77,8 @@ void testBoardAStar(){
 	board_reconnectAll(testBoard);
 	
 	callback_i = 0;
-	//~ AI_AStar_run(testBoard, each_move_callback_null, 100);
-	AI_AStar_run(testBoard, each_move_callback, 100);
+	AI_AStar_run(testBoard, each_move_callback_null, 100);
+	//~ AI_AStar_run(testBoard, each_move_callback, 5000);
 	
 	cJSON_Delete(json);
 	board_destroy(testBoard);
@@ -86,6 +86,6 @@ void testBoardAStar(){
 }
 
 void TEST_ROUTE(){
-	//~ TEST_CALL("test BFS", testBoardBFS);
+	TEST_CALL("test BFS", testBoardBFS);
 	TEST_CALL("test A*", testBoardAStar);
 }
