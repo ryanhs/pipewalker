@@ -12,6 +12,8 @@
 #include "../src/helpers/handler.h"
 #include "../src/models/route.h"
 
+#include "../src/methods/AI.h"
+
 #include "../src/helpers/map.h"
 
 #include "../src/models/pipewalker/tile.h"
@@ -85,7 +87,37 @@ void testBoardAStar(){
 	free(text);
 }
 
+void testAIMethodTest(){
+	char expectedResult[] = "test AI debug";
+	
+	cJSON *param = cJSON_CreateObject();
+	cJSON *result;
+	route_call("ai_test", param, &result, NULL);
+	ASSERT_LIKE(result->valuestring, expectedResult);
+	cJSON_Delete(param);
+	cJSON_Delete(result);
+}
+
+void testAIAStar(){
+	//~ char name[] = "ryan";
+	//~ 
+	//~ cJSON *param = cJSON_CreateObject();
+	//~ cJSON_AddStringToObject(param, "name", name);
+	//~ 
+	//~ cJSON *result;
+	//~ route_call("ehlo", param, &result, NULL);
+	//~ ASSERT_LIKE(cJSON_GetObjectItem(result, "name")->valuestring, name);
+	//~ 
+	//~ cJSON_Delete(param);
+	//~ cJSON_Delete(result);
+}
+
 void TEST_ROUTE(){
-	TEST_CALL("test BFS", testBoardBFS);
-	TEST_CALL("test A*", testBoardAStar);
+	route_add("ai_test", 	method_ai);
+	route_add("ai_A*", 		method_AStar);
+	
+	//~ TEST_CALL("test BFS", testBoardBFS);
+	//~ TEST_CALL("test A*", testBoardAStar);
+	TEST_CALL("test AI method - test", testAIMethodTest);
+	TEST_CALL("test AI method - A*", testAIAStar);
 }

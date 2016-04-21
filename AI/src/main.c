@@ -14,6 +14,7 @@
 #include "helpers/wrapper.h"
 
 #include "methods/util.h"
+#include "methods/AI.h"
 
 #include "childs/http.h"
 #include "childs/dataRefresher.h"
@@ -39,6 +40,7 @@ int main(){
 	
 	// route method add
 	route_add("ping", 					method_ping);
+	route_add("ai_test", 				method_ai);
 	
 	printf("route added...\n");
 	

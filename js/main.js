@@ -12,8 +12,6 @@ $(function(){
 	});
 	
 	
-	return;
-	
 	$.get('AI/config.json', function(configJSON){
 		var api_url = 'http://' + configJSON.http_host + ':' + configJSON.http_port;
 		API.setUrl(api_url);
@@ -30,6 +28,10 @@ $(function(){
 		
 	});
 });
+
+function api_debug(method, params){
+	API.get({method: method, params: params}, function(d){ console.log(d); });
+}
 
 function init_game(newSize){
 	boardSize = newSize === undefined ? boardSize : newSize;
