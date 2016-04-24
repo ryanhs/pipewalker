@@ -64,7 +64,7 @@ else if(is_param('compile')){
 		
 		$compile_source = $prefix_dir . '/' . $source;
 		
-		echo "  - compile: " . $prefix_dir . '/' . $compile_source . PHP_EOL;
+		echo "  - compile: " . $compile_source . PHP_EOL;
 		system("gcc -Wall -c -g -o {$path_compile} {$compile_source} {$param}");
 	}
 

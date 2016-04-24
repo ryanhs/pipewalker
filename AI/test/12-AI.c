@@ -98,26 +98,193 @@ void testAIMethodTest(){
 	cJSON_Delete(result);
 }
 
+void testAINewBoard(){
+	FILE *f;
+	long len;
+	char *text;
+	f=fopen("test/12-pipewalker.7x7.json","rb");fseek(f,0,SEEK_END);len=ftell(f);fseek(f,0,SEEK_SET);
+	text=(char*)malloc(len+1);fread(text,1,len,f);fclose(f);
+	
+	int boardSize = 7;
+	int boardId = 0;
+	cJSON *param;
+	cJSON *result;
+	
+	param =  cJSON_CreateObject();
+			 cJSON_AddNumberToObject(param, "size", boardSize);
+			 cJSON_AddStringToObject(param, "json", text);
+	
+	route_call("ai_newBoard", param, &result, NULL);
+	ASSERT(cJSON_GetObjectItem(result, "id")->valueint > 0);
+	ASSERT(cJSON_GetObjectItem(result, "size")->valueint == boardSize);
+	ASSERT(cJSON_GetObjectItem(result, "json_length")->valueint == strlen(text));
+	
+	boardId = cJSON_GetObjectItem(result, "id")->valueint;
+	ASSERT(boardId > 0);
+	
+	cJSON_Delete(param);
+	cJSON_Delete(result);
+	free(text);
+	
+	// --------------------------------------------------------------------------
+	
+	param =  cJSON_CreateObject();
+			 cJSON_AddNumberToObject(param, "id", boardId);
+			 
+	route_call("ai_closeBoard", param, &result, NULL);
+	ASSERT(cJSON_GetObjectItem(result, "id")->valueint == boardId);
+	ASSERT_LIKE(cJSON_GetObjectItem(result, "status")->valuestring, "deleted");
+	
+	cJSON_Delete(param);
+	cJSON_Delete(result);
+}
+
+void testAIGetBoard(){
+	FILE *f;
+	long len;
+	char *text;
+	f=fopen("test/12-pipewalker.7x7.json","rb");fseek(f,0,SEEK_END);len=ftell(f);fseek(f,0,SEEK_SET);
+	text=(char*)malloc(len+1);fread(text,1,len,f);fclose(f);
+	
+	int boardSize = 7;
+	int boardId = 0;
+	cJSON *param;
+	cJSON *result;
+	
+	param =  cJSON_CreateObject();
+			 cJSON_AddNumberToObject(param, "size", boardSize);
+			 cJSON_AddStringToObject(param, "json", text);
+	
+	route_call("ai_newBoard", param, &result, NULL);
+	ASSERT(cJSON_GetObjectItem(result, "id")->valueint > 0);
+	ASSERT(cJSON_GetObjectItem(result, "size")->valueint == boardSize);
+	ASSERT(cJSON_GetObjectItem(result, "json_length")->valueint == strlen(text));
+	
+	boardId = cJSON_GetObjectItem(result, "id")->valueint;
+	ASSERT(boardId > 0);
+	
+	cJSON_Delete(param);
+	cJSON_Delete(result);
+	free(text);
+	
+	// --------------------------------------------------------------------------
+	
+	param =  cJSON_CreateObject();
+			 cJSON_AddNumberToObject(param, "id", boardId);
+			 
+	route_call("ai_getBoard", param, &result, NULL);
+	ASSERT(cJSON_GetObjectItem(result, "id")->valueint == boardId);
+	ASSERT(strlen(cJSON_GetObjectItem(result, "json")->valuestring) > 0);
+	
+	cJSON_Delete(param);
+	cJSON_Delete(result);
+	
+	// --------------------------------------------------------------------------
+	
+	param =  cJSON_CreateObject();
+			 cJSON_AddNumberToObject(param, "id", boardId);
+			 
+	route_call("ai_closeBoard", param, &result, NULL);
+	ASSERT(cJSON_GetObjectItem(result, "id")->valueint == boardId);
+	ASSERT_LIKE(cJSON_GetObjectItem(result, "status")->valuestring, "deleted");
+	
+	cJSON_Delete(param);
+	cJSON_Delete(result);
+}
+
 void testAIAStar(){
-	//~ char name[] = "ryan";
+	FILE *f;
+	long len;
+	char *text;
+	f=fopen("test/12-pipewalker.7x7.json","rb");fseek(f,0,SEEK_END);len=ftell(f);fseek(f,0,SEEK_SET);
+	text=(char*)malloc(len+1);fread(text,1,len,f);fclose(f);
+	
+	int boardSize = 7;
+	int boardId = 0;
+	cJSON *param;
+	cJSON *result;
+	
+	param =  cJSON_CreateObject();
+			 cJSON_AddNumberToObject(param, "size", boardSize);
+			 cJSON_AddStringToObject(param, "json", text);
+	
+	route_call("ai_newBoard", param, &result, NULL);
+	ASSERT(cJSON_GetObjectItem(result, "id")->valueint > 0);
+	ASSERT(cJSON_GetObjectItem(result, "size")->valueint == boardSize);
+	ASSERT(cJSON_GetObjectItem(result, "json_length")->valueint == strlen(text));
+	
+	boardId = cJSON_GetObjectItem(result, "id")->valueint;
+	ASSERT(boardId > 0);
+	
+	cJSON_Delete(param);
+	cJSON_Delete(result);
+	free(text);
+	
+	// --------------------------------------------------------------------------
 	//~ 
-	//~ cJSON *param = cJSON_CreateObject();
-	//~ cJSON_AddStringToObject(param, "name", name);
-	//~ 
-	//~ cJSON *result;
-	//~ route_call("ehlo", param, &result, NULL);
-	//~ ASSERT_LIKE(cJSON_GetObjectItem(result, "name")->valuestring, name);
-	//~ 
-	//~ cJSON_Delete(param);
-	//~ cJSON_Delete(result);
+	param =  cJSON_CreateObject();
+			 cJSON_AddNumberToObject(param, "id", boardId);
+			 cJSON_AddTrueToObject(param, "debug");
+			 
+	route_call("ai_A*", param, &result, NULL);
+	ASSERT(cJSON_GetObjectItem(result, "id")->valueint == boardId);
+	ASSERT_LIKE(cJSON_GetObjectItem(result, "status")->valuestring, "in progress");
+	
+	//~ char *out = cJSON_Print(result);
+					//~ printf("%s\n",out);
+					//~ free(out);
+					
+	cJSON_Delete(param);
+	cJSON_Delete(result);
+	
+	// --------------------------------------------------------------------------
+	
+	param =  cJSON_CreateObject();
+			 cJSON_AddNumberToObject(param, "id", boardId);
+			 
+	route_call("ai_closeBoard", param, &result, NULL);
+	ASSERT(cJSON_GetObjectItem(result, "id")->valueint == boardId);
+	ASSERT_LIKE(cJSON_GetObjectItem(result, "status")->valuestring, "deleted");
+	
+	cJSON_Delete(param);
+	cJSON_Delete(result);
+}
+
+void testAIRequest(){
+	FILE *f;
+	long len;
+	char *text;
+	f=fopen("test/12-pipewalker.jsonraw.json","rb");fseek(f,0,SEEK_END);len=ftell(f);fseek(f,0,SEEK_SET);
+	text=(char*)malloc(len+1);fread(text,1,len,f);fclose(f);
+	
+	cJSON *result = handler_raw(text);
+	if(result){
+		//~ printf("%d\n", cJSON_GetObjectItem(result, "id")->valueint);
+		//~ 
+		//~ char *out = cJSON_Print(result);
+					//~ printf("%s\n",out);
+					//~ free(out);
+	}else{
+		printf("waw parsed error!\n");
+	}
+	
+	cJSON_Delete(result);
+	free(text);
 }
 
 void TEST_ROUTE(){
-	route_add("ai_test", 	method_ai);
-	route_add("ai_A*", 		method_AStar);
+	route_add("ai_test", 		method_ai_test);
+	route_add("ai_newBoard", 	method_ai_newBoard);
+	route_add("ai_closeBoard", 	method_ai_closeBoard);
+	route_add("ai_getBoard", 	method_ai_getBoard);
+	route_add("ai_A*", 			method_ai_AStar);
 	
-	//~ TEST_CALL("test BFS", testBoardBFS);
-	//~ TEST_CALL("test A*", testBoardAStar);
-	TEST_CALL("test AI method - test", testAIMethodTest);
-	TEST_CALL("test AI method - A*", testAIAStar);
+	
+	//~ TEST_CALL("test AI algo   - BFS",				testBoardBFS);
+	//~ TEST_CALL("test AI algo   - A*",				testBoardAStar);
+	//~ TEST_CALL("test AI method - test", 				testAIMethodTest);
+	//~ TEST_CALL("test AI method - new board", 		testAINewBoard);
+	//~ TEST_CALL("test AI method - get board", 		testAIGetBoard);
+	TEST_CALL("test AI method - A*", 				testAIAStar);
+	TEST_CALL("test AI method - Request JSON raw", 	testAIRequest);
 }

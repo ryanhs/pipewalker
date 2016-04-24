@@ -90,6 +90,7 @@
 						
 						<p><strong>tempted for using AI?</strong></p>
 						<div class="AI-list">
+						<!--
 							<p>
 								<a class="btn btn-success SA-btn" href="#" onClick="javascript:$('.SA-stop-btn').removeClass('hide');$('.SA-btn').attr('disabled', true);loger.reset();testAlgoSA();return false;">Simulated Annealing</a>
 								<a class="btn btn-danger hide SA-stop-btn" href="#" onClick="javascript:$('.SA-stop-btn').addClass('hide');$('.SA-btn').attr('disabled', false);clearTimeout(testAlgoSATimeout);return false;">Stop</a>
@@ -105,6 +106,11 @@
 							<p>
 								<a class="btn btn-success AStar-btn" href="#" onClick="javascript:$('.AStar-stop-btn').removeClass('hide');$('.AStar-btn').attr('disabled', true);loger.reset();testAlgoAStar();return false;">A*</a>
 								<a class="btn btn-danger hide AStar-stop-btn" href="#" onClick="javascript:$('.AStar-stop-btn').addClass('hide');$('.AStar-btn').attr('disabled', false);clearTimeout(testAlgoAStarTimeout);return false;">Stop</a>
+							</p>
+						-->
+							<p>
+								<a class="btn btn-success AStarServer-btn" href="#" onClick="javascript:$('.AStarServer-stop-btn').removeClass('hide');$('.AStarServer-btn').attr('disabled', true);loger.reset();testAlgoAStarServer();return false;">A* - from C server</a>
+								<a class="btn btn-danger hide AStarServer-stop-btn" href="#" onClick="javascript:$('.AStarServer-stop-btn').addClass('hide');$('.AStarServer-btn').attr('disabled', false);clearTimeout(testAlgoAStarServerTimeout);return false;">Stop</a>
 							</p>
 						</div>
 						
@@ -186,5 +192,6 @@
 	<script type="text/javascript" src="js/Algorithm/GeneticAlgorithm.js"></script>
 	<script type="text/javascript" src="js/Algorithm/BestFirstSearch.js"></script>
 	<script type="text/javascript" src="js/Algorithm/AStar.js"></script>
+	<script type="text/javascript" src="js/Algorithm/AStarServer.js"></script>
 </body>
 </html>

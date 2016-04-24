@@ -12,7 +12,7 @@ map_item *map_item_add(map_item *start, const char *key){
 	item->prev = NULL;
 	
 	if(start != NULL){
-		while(start != NULL){
+		while(start->next != NULL){
 			if(start->next == NULL) break;	
 		start = start->next; }
 		

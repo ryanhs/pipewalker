@@ -7,7 +7,7 @@ $(function(){
 	
 	//  SA GA BFS AStar
 	$('.AI-list > p').hide();
-	$('SA,BFS,AStar'.split(',')).each(function(k, v){
+	$('SA,BFS,AStar,AStarServer'.split(',')).each(function(k, v){
 		$('.' + v + '-btn').parent().show();
 	});
 	
@@ -29,8 +29,33 @@ $(function(){
 	});
 });
 
+function addslashes( str ) {
+    return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+}
+
+var jsonstring;
+function debug_init(){
+	jsonstring = JSON.stringify(board.data);
+}
 function api_debug(method, params){
-	API.get({method: method, params: params}, function(d){ console.log(d); });
+	var json = {method: method, params: params};
+	
+	console.log('rpc send:');
+	data = {
+		jsonrpc	: "2.0",
+		method	: method,
+		params	: params
+	};
+	var req = JSON.stringify(data);
+	console.log(req);
+	
+	API.get(json, function(d){
+		console.log('rpc reply:');
+		console.log(d);
+	}, function(d){
+		console.log('error:');
+		console.log(d);
+	});
 }
 
 function init_game(newSize){

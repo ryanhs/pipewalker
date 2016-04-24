@@ -4,10 +4,15 @@
 	"source": [
 		"src/models/config.c",
 		"src/models/route.c",
+		"src/models/pipewalker/tile.c",
+		"src/models/pipewalker/board.c",
+		"src/models/pipewalker/algorithm/BFS.c",
+		"src/models/pipewalker/algorithm/AStar.c",
 		
 		"src/helpers/signal.c",
 		"src/helpers/wrapper.c",
 		"src/helpers/handler.c",
+		"src/helpers/map.c",
 		
 		"src/methods/util.c",
 		"src/methods/AI.c",

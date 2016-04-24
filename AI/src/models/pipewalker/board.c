@@ -38,12 +38,14 @@ board_struct *board_create(int size){
 }
 
 void board_destroy(board_struct *board){
-	int i = 0;
-	while(board->data && i < board->size){
-		free(*board->data);
-		board->data++;
-		i++;
-	}
+	//~ int i = 0;
+	//~ while(board->data && i < board->size){
+		//~ free(*board->data);
+		//~ board->data++;
+		//~ i++;
+	//~ }
+	
+	free(board->data);
 	free(board);
 }
 
@@ -193,7 +195,9 @@ void board_parseJSON(board_struct *board, cJSON *JSON){
 		cell_tmp = cell_tmp->next; }
 
 	row_i++;
-	row_tmp = row_tmp->next; }
+	if(row_tmp->next != NULL) row_tmp = row_tmp->next;
+	else break;
+	}
 }
 
 void board_evaluator(board_struct *board){
@@ -281,6 +285,7 @@ void board_reconnectAll(board_struct *board){
 					}
 				}
 			}
+			free(branchCoor);
 		}
 		
 		if(tile_has_right(currentTile->type, currentTile->direction)){
@@ -301,6 +306,7 @@ void board_reconnectAll(board_struct *board){
 					}
 				}
 			}
+			free(branchCoor);
 		}
 		
 		if(tile_has_down(currentTile->type, currentTile->direction)){
@@ -321,6 +327,7 @@ void board_reconnectAll(board_struct *board){
 					}
 				}
 			}
+			free(branchCoor);
 		}
 		
 		if(tile_has_left(currentTile->type, currentTile->direction)){
@@ -341,6 +348,7 @@ void board_reconnectAll(board_struct *board){
 					}
 				}
 			}
+			free(branchCoor);
 		}
 		
 		if(currentTile->type == TILE_SOURCE){

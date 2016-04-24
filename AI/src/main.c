@@ -40,7 +40,11 @@ int main(){
 	
 	// route method add
 	route_add("ping", 					method_ping);
-	route_add("ai_test", 				method_ai);
+	route_add("ai_test", 				method_ai_test);
+	route_add("ai_newBoard", 			method_ai_newBoard);
+	route_add("ai_closeBoard", 			method_ai_closeBoard);
+	route_add("ai_getBoard", 			method_ai_getBoard);
+	route_add("ai_A*", 					method_ai_AStar);
 	
 	printf("route added...\n");
 	

@@ -65,22 +65,27 @@ void AI_AStar_run(board_struct *testBoard, void (*each_move_callback)(board_stru
 						board_parseJSON(currentBoard, currentJSON);
 						board_reconnectAll(currentBoard);
 						board_evaluator(currentBoard);
-		cJSON_Delete(currentJSON);
+		if(currentJSON) cJSON_Delete(currentJSON);
 		currentJSONString = board_JSONString(currentBoard);
 		
 		// show process
 		each_move_callback(currentBoard);
+		if(testBoard) board_destroy(testBoard);
+		testBoard = board_clone(currentBoard);
+					board_parseJSON(testBoard, currentJSON);
+					board_reconnectAll(testBoard);
+					board_evaluator(testBoard);
 		
 		// if finish reconstruct path !!!!!
 		if(currentBoard->isAllClientOK == 1) break; // recon
 		
 		// openSet splice(0, 1)
-		if(map_size(openSet) == 1){ map_item_delete(openSet); openSet = NULL; }
-		else map_item_remove(openSet, currentJSONString);
+		if(map_size(openSet) > 1){ map_item_remove(openSet, currentJSONString); }
+		else map_item_delete(openSet); openSet = NULL;
 		
 		// closedSet push
 		if(closedSet == NULL) closedSet = map_item_add(NULL, currentJSONString);
-		else map_item_add(closedSet, currentJSONString);
+		else closedSet = map_item_add(closedSet, currentJSONString);
 		
 		
 		// process neighbors
@@ -247,9 +252,9 @@ void AI_AStar_run(board_struct *testBoard, void (*each_move_callback)(board_stru
 		free(currentJSONString);
 	}
 	
-	if(closedSet != NULL) map_item_delete(closedSet);
-	if(openSet != NULL) map_item_delete(openSet);
-	if(gScore != NULL) map_item_delete(gScore);
-	if(fScore != NULL) map_item_delete(fScore);
-	if(cameFrom != NULL) map_item_delete(cameFrom);
+	if(closedSet != NULL) 	map_item_delete(closedSet);
+	if(openSet != NULL) 	map_item_delete(openSet);
+	if(gScore != NULL) 		map_item_delete(gScore);
+	if(fScore != NULL) 		map_item_delete(fScore);
+	if(cameFrom != NULL) 	map_item_delete(cameFrom);
 }
