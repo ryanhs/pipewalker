@@ -59,7 +59,7 @@ void pthread_ms_sleep(int ms){
     gettimeofday(&now,NULL);
 
     timeToWait.tv_sec = now.tv_sec;
-    timeToWait.tv_nsec = now.tv_usec*ms;
+    timeToWait.tv_nsec = now.tv_usec * ms;
 
     pthread_mutex_lock(&fakeMutex);
     pthread_cond_timedwait(&fakeCond, &fakeMutex, &timeToWait);

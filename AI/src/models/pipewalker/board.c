@@ -40,13 +40,13 @@ board_struct *board_create(int size){
 void board_destroy(board_struct *board){
 	//~ int i = 0;
 	//~ while(board->data && i < board->size){
-		//~ free(*board->data);
+		//~ safeFree(*board->data);
 		//~ board->data++;
 		//~ i++;
 	//~ }
 	
-	free(board->data);
-	free(board);
+	safeFree(board->data);
+	safeFree(board);
 }
 
 short int *board_get_up_coordinate(board_struct *board, short int row, short int cell){
@@ -76,7 +76,7 @@ short int *board_get_left_coordinate(board_struct *board, short int row, short i
 
 tile_struct *board_get_tile(board_struct *board, short int row, short int cell){
 	if(row < board->size && cell < board->size){
-		return board->data[row][cell];
+		return board->data[row][cell] ? board->data[row][cell] : NULL;
 	}
 
 	return NULL;
@@ -93,7 +93,7 @@ tile_struct *board_get_up_tile(board_struct *board, short int row, short int cel
 			*(coor + 0),
 			*(coor + 1)
 		);
-		free(coor);
+		safeFree(coor);
 		return resultCell;
 	}
 
@@ -111,7 +111,7 @@ tile_struct *board_get_right_tile(board_struct *board, short int row, short int 
 			*(coor + 0),
 			*(coor + 1)
 		);
-		free(coor);
+		safeFree(coor);
 		return resultCell;
 	}
 
@@ -129,7 +129,7 @@ tile_struct *board_get_down_tile(board_struct *board, short int row, short int c
 			*(coor + 0),
 			*(coor + 1)
 		);
-		free(coor);
+		safeFree(coor);
 		return resultCell;
 	}
 
@@ -147,7 +147,7 @@ tile_struct *board_get_left_tile(board_struct *board, short int row, short int c
 			*(coor + 0),
 			*(coor + 1)
 		);
-		free(coor);
+		safeFree(coor);
 		return resultCell;
 	}
 
@@ -180,15 +180,20 @@ void board_parseJSON(board_struct *board, cJSON *JSON){
 
 				// active
 				board->data[row_i][cell_i]->active = cJSON_GetObjectItem(cell_tmp, "active")->type == cJSON_True ? TILE_ACTIVE : TILE_INACTIVE;
-
+				
 				// direction
-				board->data[row_i][cell_i]->direction = (
-					(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "up") == 0 ? TILE_UP :
-					(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "left") == 0 ? TILE_LEFT :
-					(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "down") == 0 ? TILE_DOWN :
-					(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "right") == 0 ? TILE_RIGHT : TILE_UP
-					))))
-				);
+				if(cJSON_GetObjectItem(cell_tmp, "direction")){
+					board->data[row_i][cell_i]->direction = (
+						(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "up") == 0 ? TILE_UP :
+						(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "left") == 0 ? TILE_LEFT :
+						(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "down") == 0 ? TILE_DOWN :
+						(strcmp(cJSON_GetObjectItem(cell_tmp, "direction")->valuestring, "right") == 0 ? TILE_RIGHT : TILE_UP
+						))))
+					);
+				}else{
+					board->data[row_i][cell_i]->direction = TILE_UP;
+				}
+					
 			}
 
 		cell_i++;
@@ -253,7 +258,7 @@ void board_reconnectAll(board_struct *board){
 	map_item *openSet = map_item_add(NULL, "source");
 						openSet->valueInt1 = board_row(sourceCoordinate);
 						openSet->valueInt2 = board_cell(sourceCoordinate);
-						free(sourceCoordinate);
+						safeFree(sourceCoordinate);
 	
 	map_item *currentSet;
 	tile_struct *currentTile;
@@ -285,7 +290,7 @@ void board_reconnectAll(board_struct *board){
 					}
 				}
 			}
-			free(branchCoor);
+			safeFree(branchCoor);
 		}
 		
 		if(tile_has_right(currentTile->type, currentTile->direction)){
@@ -306,7 +311,7 @@ void board_reconnectAll(board_struct *board){
 					}
 				}
 			}
-			free(branchCoor);
+			safeFree(branchCoor);
 		}
 		
 		if(tile_has_down(currentTile->type, currentTile->direction)){
@@ -327,7 +332,7 @@ void board_reconnectAll(board_struct *board){
 					}
 				}
 			}
-			free(branchCoor);
+			safeFree(branchCoor);
 		}
 		
 		if(tile_has_left(currentTile->type, currentTile->direction)){
@@ -348,7 +353,7 @@ void board_reconnectAll(board_struct *board){
 					}
 				}
 			}
-			free(branchCoor);
+			safeFree(branchCoor);
 		}
 		
 		if(currentTile->type == TILE_SOURCE){
@@ -373,6 +378,11 @@ board_struct *board_clone(board_struct *board){
 			newBoard->data[row_i][cell_i]->direction =	board->data[row_i][cell_i]->direction;
 		}
 	}
+	
+	newBoard->clientConnected = board->clientConnected;
+	newBoard->pipeConnected = board->pipeConnected;
+	newBoard->result = board->result;
+	newBoard->isAllClientOK = board->isAllClientOK;
 
 	return newBoard;
 }
@@ -385,8 +395,8 @@ cJSON *board_JSON(board_struct *board){
 
 	root = cJSON_CreateArray();
 
-	short int row_i;
-	short int cell_i;
+	int row_i;
+	int cell_i;
 	for(row_i = 0; row_i < board->size; row_i++){
 		row_tmp = cJSON_CreateArray();
 

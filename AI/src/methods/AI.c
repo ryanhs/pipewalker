@@ -4,6 +4,7 @@
 #include <malloc.h>
 #include <pthread.h>
 #include <sys/time.h>
+#include <unistd.h>
 #include "../childs/dataRefresher.h"
 #include "../../lib/cJSON/cJSON.h"
 #include "../helpers/handler.h"
@@ -54,6 +55,7 @@ int method_ai_newBoard(cJSON *params, cJSON **result, char *error_msg){
 	board_struct *testBoard = 	board_create(size);
 								board_parseJSON(testBoard, json);
 								board_reconnectAll(testBoard);
+								board_evaluator(testBoard);
 	cJSON_Delete(json);
 	
 	boards->valueInt1 = size;
@@ -138,21 +140,27 @@ static void *AStar_ai_worker_start(void *args){
 		if(currentBoard->clientConnected == 0) return;
 		
 		AStar_callback_i++;
-		
-		printf("============== #%d [%s]\n", AStar_callback_i, currentBoard->isAllClientOK == 1 ? "finish" : "running");
-		printf("\tresult:\t\t %d\n", currentBoard->result);
-		printf("\tpipeConnected:\t %d\n", currentBoard->pipeConnected);
-		printf("\tclientConnected: %d\n\n", currentBoard->clientConnected);
-		//~ pthread_ms_sleep(1);
-		pthread_mysleep(1);
+		printf("A* #%d  result:%d   pipe:%d   client:%d\t%s\n\n", 	AStar_callback_i,
+																currentBoard->result,
+																currentBoard->pipeConnected,
+																currentBoard->clientConnected,
+																currentBoard->isAllClientOK ? "[finish]" : ""
+															);
+															
+		if(AStar_callback_i > 50) pthread_ms_sleep(250);
+		if(AStar_callback_i > 75) pthread_ms_sleep(150);
+		if(AStar_callback_i > 100) pthread_ms_sleep(100);
+		//~ pthread_ms_sleep(250);
+		//~ pthread_mysleep(1);
+		//~ usleep(500000000);
 		
 		board_struct *tmpBoard = (board_struct *) tmpItem->valueVoid1;
 		board_struct *testBoard = 	board_clone(currentBoard);
-									board_reconnectAll(testBoard);
-									board_evaluator(testBoard);
+									//~ board_reconnectAll(testBoard);
+									//~ board_evaluator(testBoard);
 									
 		tmpItem->valueVoid1 = testBoard;
-		board_destroy(tmpBoard);
+		if(AStar_callback_i > 1) board_destroy(tmpBoard);
 	}
 	
 	

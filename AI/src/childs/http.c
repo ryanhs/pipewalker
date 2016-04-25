@@ -139,6 +139,10 @@ static void *http_worker_start(void *args){
     char *response;
     
     while(1){
+		// initialized first before loop
+		client.sin_family = AF_INET;
+		client.sin_addr.s_addr = INADDR_ANY;
+		c = 0;
 		
 		//accept connection from an incoming client
 		client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c);

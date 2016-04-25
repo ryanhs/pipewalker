@@ -1,0 +1,4 @@
+#!/bin/bash
+
+algrind --tool=memcheck --leak-check=full build/api.run
+

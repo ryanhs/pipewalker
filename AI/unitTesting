@@ -115,7 +115,7 @@ foreach($test_file as $test){
 	echo '# ' . $test['file'] . PHP_EOL;
 	
 	ob_start();
-		system($test['out']) . PHP_EOL;
+		system('valgrind --tool=memcheck --leak-check=yes --show-reachable=yes --num-callers=20 --track-fds=yes ' . $test['out']) . PHP_EOL;
 	$output = ob_get_clean();
 	$output = str_replace('<br/>', PHP_EOL, nl2br($output));
 	$output = str_replace('<br />', PHP_EOL, $output);

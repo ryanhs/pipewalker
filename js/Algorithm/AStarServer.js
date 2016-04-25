@@ -47,11 +47,18 @@ function testAlgoAStarServer(){
 					
 					if(!board.isAllClientOK()){
 						testAlgoAStarServerIterator++;
-						testAlgoAStarServerTimeout = setTimeout(do_AStarServer, 1000);
+						testAlgoAStarServerTimeout = setTimeout(do_AStarServer, 250);
 					}else{
-						console.log('A* Server: finish!');
-						$('.AStarServer-stop-btn').addClass('hide');
-						$('.AStarServer-btn').removeAttr('disabled');
+						API.get({
+							method: 'ai_closeBoard',
+							params: {
+								'id': boardId,
+							}
+						}, function(d){
+							console.log('A* Server: finish!');
+							$('.AStarServer-stop-btn').addClass('hide');
+							$('.AStarServer-btn').removeAttr('disabled');
+						});
 					}
 				});
 			}

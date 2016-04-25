@@ -34,7 +34,7 @@ void AI_AStar_run(board_struct *testBoard, void (*each_move_callback)(board_stru
 	
 	map_item *fScore =	map_item_add(NULL, currentJSONString);
 						fScore->valueInt1 = abs(currentBoard->result - 1000); // use -1000 to replicate heuristic_cost_estimate()
-	free(currentJSONString); currentJSONString = NULL;
+	safeFree(currentJSONString); currentJSONString = NULL;
 	board_destroy(currentBoard);
 	
 	map_item *tmpSet;
@@ -65,19 +65,23 @@ void AI_AStar_run(board_struct *testBoard, void (*each_move_callback)(board_stru
 						board_parseJSON(currentBoard, currentJSON);
 						board_reconnectAll(currentBoard);
 						board_evaluator(currentBoard);
-		if(currentJSON) cJSON_Delete(currentJSON);
 		currentJSONString = board_JSONString(currentBoard);
 		
 		// show process
 		each_move_callback(currentBoard);
 		if(testBoard) board_destroy(testBoard);
 		testBoard = board_clone(currentBoard);
-					board_parseJSON(testBoard, currentJSON);
-					board_reconnectAll(testBoard);
-					board_evaluator(testBoard);
+					//~ board_parseJSON(testBoard, currentJSON);
+					//~ board_reconnectAll(testBoard);
+					//~ board_evaluator(testBoard);
 		
 		// if finish reconstruct path !!!!!
-		if(currentBoard->isAllClientOK == 1) break; // recon
+		if(currentBoard->isAllClientOK == 1){			
+			cJSON_Delete(currentJSON);
+			board_destroy(currentBoard);
+			safeFree(currentJSONString);
+			break;
+		} // recon
 		
 		// openSet splice(0, 1)
 		if(map_size(openSet) > 1){ map_item_remove(openSet, currentJSONString); }
@@ -128,7 +132,7 @@ void AI_AStar_run(board_struct *testBoard, void (*each_move_callback)(board_stru
 							tmpSet->valueInt1 = tentative_gScore + abs(tmpBoard->result - 1000);
 						}
 					}
-					free(tmpJSONString);
+					safeFree(tmpJSONString);
 					board_destroy(tmpBoard);
 					
 					// ----------------------------------------------------------------------------------
@@ -165,7 +169,7 @@ void AI_AStar_run(board_struct *testBoard, void (*each_move_callback)(board_stru
 							tmpSet->valueInt1 = tentative_gScore + abs(tmpBoard->result - 1000);
 						}
 					}
-					free(tmpJSONString);
+					safeFree(tmpJSONString);
 					board_destroy(tmpBoard);
 					
 					// ----------------------------------------------------------------------------------
@@ -202,7 +206,7 @@ void AI_AStar_run(board_struct *testBoard, void (*each_move_callback)(board_stru
 							tmpSet->valueInt1 = tentative_gScore + abs(tmpBoard->result - 1000);
 						}
 					}
-					free(tmpJSONString);
+					safeFree(tmpJSONString);
 					board_destroy(tmpBoard);
 					
 					// ----------------------------------------------------------------------------------
@@ -239,7 +243,7 @@ void AI_AStar_run(board_struct *testBoard, void (*each_move_callback)(board_stru
 							tmpSet->valueInt1 = tentative_gScore + abs(tmpBoard->result - 1000);
 						}
 					}
-					free(tmpJSONString);
+					safeFree(tmpJSONString);
 					board_destroy(tmpBoard);
 					
 				}
@@ -248,8 +252,9 @@ void AI_AStar_run(board_struct *testBoard, void (*each_move_callback)(board_stru
 		
 		
 		// clean up
+		cJSON_Delete(currentJSON);
 		board_destroy(currentBoard);
-		free(currentJSONString);
+		safeFree(currentJSONString);
 	}
 	
 	if(closedSet != NULL) 	map_item_delete(closedSet);

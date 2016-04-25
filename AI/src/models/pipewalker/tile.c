@@ -64,114 +64,102 @@ char *tile_to_string(char *output, tile_struct *tile){
 }
 
 
-short int *tile_active_branches(short int tile_type, short int tile_direction){
+short int *tile_active_branches(short int tile_type, short int tile_direction, short int *result4intArr){
 	short int hasUp = 0;
 	short int hasRight = 0;
 	short int hasDown = 0;
 	short int hasLeft = 0;
-	short int i = 0;
-	
+
 	if(tile_type == TILE_SOURCE || tile_type == TILE_CLIENT){
 		if(tile_direction == TILE_UP){
-			hasUp = 1; i++;
+			hasUp = 1;
 		}
 		if(tile_direction == TILE_RIGHT){
-			hasRight = 1; i++;
+			hasRight = 1;
 		}
 		if(tile_direction == TILE_DOWN){
-			hasDown = 1; i++;
+			hasDown = 1;
 		}
 		if(tile_direction == TILE_LEFT){
-			hasLeft = 1; i++;
+			hasLeft = 1;
 		}
 	}
 	else if(tile_type == TILE_PIPE_1){
 		if(tile_direction == TILE_UP){
-			hasUp = 1; i++;
-			hasDown = 1; i++;
+			hasUp = 1;
+			hasDown = 1;
 		}
 		if(tile_direction == TILE_RIGHT){
-			hasLeft = 1; i++;
-			hasRight = 1; i++;
+			hasLeft = 1;
+			hasRight = 1;
 		}
 		if(tile_direction == TILE_DOWN){
-			hasUp = 1; i++;
-			hasDown = 1; i++;
+			hasUp = 1;
+			hasDown = 1;
 		}
 		if(tile_direction == TILE_LEFT){
-			hasLeft = 1; i++;
-			hasRight = 1; i++;
+			hasLeft = 1;
+			hasRight = 1;
 		}
 	}
 	else if(tile_type == TILE_PIPE_2){
 		if(tile_direction == TILE_UP){
-			hasUp = 1; i++;
-			hasRight = 1; i++;
+			hasUp = 1;
+			hasRight = 1;
 		}
 		if(tile_direction == TILE_RIGHT){
-			hasRight = 1; i++;
-			hasDown = 1; i++;
+			hasRight = 1;
+			hasDown = 1;
 		}
 		if(tile_direction == TILE_DOWN){
-			hasDown = 1; i++;
-			hasLeft = 1; i++;
+			hasDown = 1;
+			hasLeft = 1;
 		}
 		if(tile_direction == TILE_LEFT){
-			hasLeft = 1; i++;
-			hasUp = 1; i++;
+			hasLeft = 1;
+			hasUp = 1;
 		}
 	}
 	else if(tile_type == TILE_PIPE_3){
 		if(tile_direction == TILE_UP){
-			hasUp = 1; i++;
-			hasRight = 1; i++;
-			hasDown = 1; i++;
+			hasUp = 1;
+			hasRight = 1;
+			hasDown = 1;
 		}
 		if(tile_direction == TILE_RIGHT){
-			hasRight = 1; i++;
-			hasDown = 1; i++;
-			hasLeft = 1; i++;
+			hasRight = 1;
+			hasDown = 1;
+			hasLeft = 1;
 		}
 		if(tile_direction == TILE_DOWN){
-			hasUp = 1; i++;
-			hasDown = 1; i++;
-			hasLeft = 1; i++;
+			hasUp = 1;
+			hasDown = 1;
+			hasLeft = 1;
 		}
 		if(tile_direction == TILE_LEFT){
-			hasUp = 1; i++;
-			hasRight = 1; i++;
-			hasLeft = 1; i++;
+			hasUp = 1;
+			hasRight = 1;
+			hasLeft = 1;
 		}
 	}
 	
-	if(i == 0) return NULL;
+	if(hasUp){		result4intArr[0] = 1;}
+	if(hasRight){ 	result4intArr[1] = 1; }
+	if(hasDown){ 	result4intArr[2] = 1; }
+	if(hasLeft){ 	result4intArr[3] = 1; }
 	
-	short int *arr = calloc(i, sizeof(short int));
-	short int *tmp = arr;
-	i = 0;
-	
-	if(hasLeft){ *(tmp + i) = TILE_LEFT; i++; }
-	if(hasUp){ *(tmp + i) = TILE_UP; i++; }
-	if(hasRight){ *(tmp + i) = TILE_RIGHT; i++; }
-	if(hasDown){ *(tmp + i) = TILE_DOWN; i++; }
-	
-	return arr;
+	return result4intArr;
 }
 
 short int tile_has_direction(short int tile_type, short int tile_direction, short int comparator){
-	short int *branches = tile_active_branches(tile_type, tile_direction);
-	short int *tmpFree = branches;
-	if(branches == NULL) return 0;
+	short int branches[4] = {0, 0, 0, 0};
+							tile_active_branches(tile_type, tile_direction, (short int *) &branches);
 	
-	while(*branches){
-		if(*branches == comparator) break;
-		branches++;
-	}
-	
-	short int tmp = *branches;
-	free(tmpFree);
-	return tmp == comparator ? 1 : 0;
+	if(branches[comparator - TILE_UP] == 1) return 1;
+	return 0;
 }
+
+
 short int tile_has_up(short int tile_type, short int tile_direction){
 	return tile_has_direction(tile_type, tile_direction, TILE_UP);
 }

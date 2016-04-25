@@ -10,6 +10,12 @@ map_item *map_item_add(map_item *start, const char *key){
 	strcpy(item->key, key);
 	item->next = NULL;
 	item->prev = NULL;
+	item->valueInt1 = 0;
+	item->valueInt2 = 0;
+	item->valueInt3 = 0;
+	item->valueDouble1 = 0;
+	item->valueDouble2 = 0;
+	item->valueDouble3 = 0;
 	
 	if(start != NULL){
 		while(start->next != NULL){

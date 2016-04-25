@@ -19,6 +19,7 @@ void config_init(char *config_file){
     FILE *fp;
     long len;
     char *data;
+    char intstr[2];
 	
 	fp = fopen(config_file, "rb");
 	if (fp == NULL)
@@ -41,8 +42,8 @@ void config_init(char *config_file){
 			config_add(subitem->string, subitem->valuestring);
 		
 		if(subitem->type == cJSON_Number){
-			sprintf(data, "%d", subitem->valueint);
-			config_add(subitem->string, data);
+			sprintf(intstr, "%d", subitem->valueint);
+			config_add(subitem->string, intstr);
 		}
 		
 		if(subitem->type == cJSON_True)
