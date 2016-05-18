@@ -45,6 +45,7 @@ int main(){
 	route_add("ai_closeBoard", 			method_ai_closeBoard);
 	route_add("ai_getBoard", 			method_ai_getBoard);
 	route_add("ai_A*", 					method_ai_AStar);
+	route_add("ai_BFS", 					method_ai_BFS);
 	
 	printf("route added...\n");
 	

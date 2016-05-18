@@ -109,6 +109,10 @@
 							</p>
 						-->
 							<p>
+								<a class="btn btn-success BFSServer-btn" href="#" onClick="javascript:$('.BFSServer-stop-btn').removeClass('hide');$('.BFSServer-btn').attr('disabled', true);loger.reset();testAlgoBFSServer();return false;">BFS - from C server</a>
+								<a class="btn btn-danger hide BFSServer-stop-btn" href="#" onClick="javascript:$('.BFSServer-stop-btn').addClass('hide');$('.BFSServer-btn').attr('disabled', false);clearTimeout(testAlgoBFSServerTimeout);return false;">Stop</a>
+							</p>
+							<p>
 								<a class="btn btn-success AStarServer-btn" href="#" onClick="javascript:$('.AStarServer-stop-btn').removeClass('hide');$('.AStarServer-btn').attr('disabled', true);loger.reset();testAlgoAStarServer();return false;">A* - from C server</a>
 								<a class="btn btn-danger hide AStarServer-stop-btn" href="#" onClick="javascript:$('.AStarServer-stop-btn').addClass('hide');$('.AStarServer-btn').attr('disabled', false);clearTimeout(testAlgoAStarServerTimeout);return false;">Stop</a>
 							</p>
@@ -193,5 +197,6 @@
 	<script type="text/javascript" src="js/Algorithm/BestFirstSearch.js"></script>
 	<script type="text/javascript" src="js/Algorithm/AStar.js"></script>
 	<script type="text/javascript" src="js/Algorithm/AStarServer.js"></script>
+	<script type="text/javascript" src="js/Algorithm/BFSServer.js"></script>
 </body>
 </html>

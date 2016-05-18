@@ -11,6 +11,7 @@
 #include "../helpers/map.h"
 #include "../models/pipewalker/board.h"
 #include "../models/pipewalker/algorithm/AStar.h"
+#include "../models/pipewalker/algorithm/BFS.h"
 
 #include "AI.h"
 
@@ -60,6 +61,9 @@ int method_ai_newBoard(cJSON *params, cJSON **result, char *error_msg){
 	
 	boards->valueInt1 = size;
 	boards->valueVoid1 = (void *) testBoard;
+	
+	
+	printf("A* board(%d) created!\n", boards_idx);
 	
 	*result = 	cJSON_CreateObject();
 				cJSON_AddNumberToObject(*result, "id", boards_idx);
@@ -140,16 +144,17 @@ static void *AStar_ai_worker_start(void *args){
 		if(currentBoard->clientConnected == 0) return;
 		
 		AStar_callback_i++;
-		printf("A* #%d  result:%d   pipe:%d   client:%d\t%s\n\n", 	AStar_callback_i,
-																currentBoard->result,
-																currentBoard->pipeConnected,
-																currentBoard->clientConnected,
-																currentBoard->isAllClientOK ? "[finish]" : ""
+		printf("A* board(%d) #%d | result: %d | pipe: %d | client: %d%s\n", *((int *) args),	
+																			AStar_callback_i,
+																			currentBoard->result,
+																			currentBoard->pipeConnected,
+																			currentBoard->clientConnected,
+																			currentBoard->isAllClientOK ? " << [finish]" : ""
 															);
 															
-		if(AStar_callback_i > 50) pthread_ms_sleep(250);
-		if(AStar_callback_i > 75) pthread_ms_sleep(150);
-		if(AStar_callback_i > 100) pthread_ms_sleep(100);
+		//~ if(AStar_callback_i > 50) pthread_ms_sleep(250);
+		//~ if(AStar_callback_i > 75) pthread_ms_sleep(150);
+		//~ if(AStar_callback_i > 100) pthread_ms_sleep(100);
 		//~ pthread_ms_sleep(250);
 		//~ pthread_mysleep(1);
 		//~ usleep(500000000);
@@ -193,6 +198,86 @@ int method_ai_AStar(cJSON *params, cJSON **result, char *error_msg){
 	if(tmp)
 		if(tmp->type == cJSON_True){
 			printf("A*: Waiting for thread finish.. \n");
+			pthread_join(thread, NULL);
+		}
+	
+	*result = 	cJSON_CreateObject();
+				cJSON_AddNumberToObject(*result, "id", tmpId);
+				cJSON_AddStringToObject(*result, "status", "in progress");
+	return 0;
+}
+
+
+
+
+
+
+
+static void *BFS_ai_worker_start(void *args){
+	int BFS_callback_i = 0;
+	char tmpIdStr[5];
+	sprintf(tmpIdStr, "%d",  *((int *) args));
+	map_item *tmpItem = map_item_get(boards, tmpIdStr);
+	
+	void BFS_each_move_callback(board_struct *currentBoard){
+		if(!currentBoard) return;
+		if(currentBoard->clientConnected == 0) return;
+		
+		BFS_callback_i++;
+		printf("BFS board(%d) #%d | result: %d | pipe: %d | client: %d%s\n", *((int *) args),	
+																			BFS_callback_i,
+																			currentBoard->result,
+																			currentBoard->pipeConnected,
+																			currentBoard->clientConnected,
+																			currentBoard->isAllClientOK ? " << [finish]" : ""
+															);
+															
+		//~ if(BFS_callback_i > 50) pthread_ms_sleep(250);
+		//~ if(BFS_callback_i > 75) pthread_ms_sleep(150);
+		//~ if(BFS_callback_i > 100) pthread_ms_sleep(100);
+		//~ pthread_ms_sleep(250);
+		//~ pthread_mysleep(1);
+		//~ usleep(500000000);
+		
+		board_struct *tmpBoard = (board_struct *) tmpItem->valueVoid1;
+		board_struct *testBoard = 	board_clone(currentBoard);
+									//~ board_reconnectAll(testBoard);
+									//~ board_evaluator(testBoard);
+									
+		tmpItem->valueVoid1 = testBoard;
+		if(BFS_callback_i > 1) board_destroy(tmpBoard);
+	}
+	
+	
+	AI_BFS_run((board_struct *) tmpItem->valueVoid1, BFS_each_move_callback, 100);
+	free(args);
+	return 0;
+}
+
+int method_ai_BFS(cJSON *params, cJSON **result, char *error_msg){
+	if(!params) return RESPONSE_INVALID_PARAMS;
+	if(params->type != cJSON_Object) return RESPONSE_INVALID_PARAMS;
+	
+	int tmpId = 0;
+	cJSON *tmp;
+	
+	tmp = cJSON_GetObjectItem(params, "id");
+	if(tmp)
+		if(tmp->type == cJSON_Number)
+			tmpId = tmp->valueint;
+			
+	// filter vars
+	if(tmpId == 0) return RESPONSE_INVALID_PARAMS;
+
+	int *boardIdPointer = malloc(sizeof(int));
+		*boardIdPointer = tmpId;
+    pthread_t thread;
+	pthread_create(&thread, NULL, &BFS_ai_worker_start, boardIdPointer);
+	
+	tmp = cJSON_GetObjectItem(params, "debug");
+	if(tmp)
+		if(tmp->type == cJSON_True){
+			printf("BFS: Waiting for thread finish.. \n");
 			pthread_join(thread, NULL);
 		}
 	

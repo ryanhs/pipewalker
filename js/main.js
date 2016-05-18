@@ -7,7 +7,7 @@ $(function(){
 	
 	//  SA GA BFS AStar
 	$('.AI-list > p').hide();
-	$('SA,BFS,AStar,AStarServer'.split(',')).each(function(k, v){
+	$('SA,BFS,AStar,AStarServer,BFSServer'.split(',')).each(function(k, v){
 		$('.' + v + '-btn').parent().show();
 	});
 	

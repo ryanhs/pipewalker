@@ -10,6 +10,7 @@ int method_ai_getBoard(cJSON *params, cJSON **result, char *error_msg);
 	
 	
 int method_ai_AStar(cJSON *params, cJSON **result, char *error_msg);
+int method_ai_BFS(cJSON *params, cJSON **result, char *error_msg);
 
 
 #endif
