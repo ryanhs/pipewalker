@@ -10,6 +10,15 @@ I made this for implement AI algorithm in my final term.
 - just use bower to install bootstrap-sass and jquery
 - i use koala to compile style.scss, you can use other apps if you like
 
+
+### AI implementation in C
+if you want to learn some basic AI in C, you can checkout into branch dev to see AI directory,
+but since this github host can't run server side apps, then i made a sample AI in javascript for gh-pages :-)
+
+### demo
+[http://ryanhs.github.io/pipewalker/](http://ryanhs.github.io/pipewalker/)
+ 
+
 ### pipewalker
 - author: Artem Senichev &lt;artemsen@gmail.com&gt;
 - website: [pipewalker.sourceforge.net](http://pipewalker.sourceforge.net)
