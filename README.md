@@ -22,3 +22,10 @@ but since this github host can't run server side apps, then i made a sample AI i
 ### pipewalker
 - author: Artem Senichev &lt;artemsen@gmail.com&gt;
 - website: [pipewalker.sourceforge.net](http://pipewalker.sourceforge.net)
+
+
+
+### learn something else?
+also before i made this apps, i try to build 8puzzle first,
+just fork here: [https://github.com/ryanhs/8-puzzle](https://github.com/ryanhs/8-puzzle)
+or  try a demo: [http://ryanhs.github.io/8-puzzle/](http://ryanhs.github.io/8-puzzle/)
